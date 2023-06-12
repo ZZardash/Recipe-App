@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/btnAddRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/img_half_1"
+            android:fontFamily="@font/montserrat_bold"
+            android:onClick="onAddRecipeButtonClick"
+            android:text="Add New Recipe"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="-73dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/btnViewRecipes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="View Recipes"
+            android:textSize="18sp"
+            android:fontFamily="@font/montserrat_bold"
+            android:textStyle="bold"
+            android:background="@drawable/img_half_2"
+            android:onClick="onViewRecipesButtonClick" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

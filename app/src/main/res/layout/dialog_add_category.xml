@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <FrameLayout
+        android:id="@+id/backgroundContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+    <EditText
+        android:id="@+id/etCategoryName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Category Name"
+        android:layout_marginBottom="25dp"
+        android:background="@android:color/transparent" />
+
+    <EditText
+        android:id="@+id/etCategoryDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Category Description"
+        android:minLines="0"
+        android:maxLines="6"
+        android:inputType="textMultiLine"
+        android:layout_marginBottom="60dp"
+        android:background="@android:color/transparent" />
+
+    <ImageView
+        android:id="@+id/ivCategoryPhoto"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/placeholder_img"
+        android:scaleType="centerCrop"
+        android:padding="8dp"
+        android:clickable="true"
+        android:onClick="onCategoryPhotoClick" />
+
+
+</LinearLayout>
