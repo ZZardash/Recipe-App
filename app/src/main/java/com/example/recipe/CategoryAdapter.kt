@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 class CategoryAdapter(private val itemList: List<Category>) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imageView: ImageView = itemView.findViewById(R.id.imageView)
+        val imageView: ImageView = itemView.findViewById(R.id.categoryImage)
         val textView: TextView = itemView.findViewById(R.id.textView)
     }
 

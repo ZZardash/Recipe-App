@@ -1,43 +1,38 @@
 package com.example.recipe
 
-import android.content.Intent
 import android.Manifest
-import android.content.pm.PackageManager
-import android.provider.MediaStore
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import android.graphics.Color
-import android.widget.Button
-import androidx.appcompat.app.AlertDialog
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.view.Gravity
-import android.widget.FrameLayout
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.provider.MediaStore
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class NewCategoryActivity: AppCompatActivity() {
-    private lateinit var categoryBox:View
+class NewCategoryActivity : AppCompatActivity() {
     private lateinit var ivCategoryPhoto: ImageView
     private lateinit var categoryNameTextView: TextView
-    private lateinit var categoryRecylerView: RecyclerView
+    private lateinit var categoryRecyclerView: RecyclerView
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var btnAddCategory: Button
-    private lateinit var categoryList: List<Category>
+    private lateinit var categoryList: MutableList<Category>
 
-
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_category)
@@ -45,28 +40,37 @@ class NewCategoryActivity: AppCompatActivity() {
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-
         // Diğer kodlar...
 
         // 'btnAddCategory' butonuna tıklanıldığında çalışacak kod
         btnAddCategory = findViewById<Button>(R.id.btnAddCategory)
 
-        categoryRecylerView = findViewById(R.id.categoryRecyclerView)
-        categoryRecylerView.layoutManager = GridLayoutManager(this, 3)
+        categoryRecyclerView = findViewById(R.id.categoryRecyclerView)
+        categoryRecyclerView.layoutManager = GridLayoutManager(this, 3)
         categoryList = mutableListOf<Category>()
         categoryAdapter = CategoryAdapter(categoryList)
-        categoryRecylerView.adapter = categoryAdapter
+        categoryRecyclerView.adapter = categoryAdapter
 
+        val spacing = resources.getDimensionPixelSize(R.dimen.grid_spacing)
+        val gridSpacingItemDecoration = GridSpacingItemDecoration(3, spacing, true)
+        categoryRecyclerView.addItemDecoration(gridSpacingItemDecoration)
+
+        val spanCount = 3 // Sütun sayısı
+        val spacingBetweenItems = resources.getDimensionPixelSize(R.dimen.grid_spacing) // Öğeler arası boşluk
+
+        val layoutManager = GridLayoutManager(this, spanCount)
+        layoutManager.orientation = GridLayoutManager.VERTICAL
+        categoryRecyclerView.layoutManager = layoutManager
         btnAddCategory.setOnClickListener {
 
             applyBlurAnimation()
             val dialogBuilder = AlertDialog.Builder(this)
-            val inflater = layoutInflater
+            val inflater = LayoutInflater.from(this)
             val dialogView = inflater.inflate(R.layout.dialog_add_category, null)
             dialogBuilder.setView(dialogView)
 
             // Kategori İsmi ve Açıklama için EditText alanlarına erişim sağlayabilirsiniz
-            categoryNameTextView= dialogView.findViewById<EditText>(R.id.etCategoryName)
+            categoryNameTextView = dialogView.findViewById<EditText>(R.id.etCategoryName)
             val etCategoryDescription = dialogView.findViewById<EditText>(R.id.etCategoryDescription)
             ivCategoryPhoto = dialogView.findViewById<ImageView>(R.id.ivCategoryPhoto)
 
@@ -89,16 +93,11 @@ class NewCategoryActivity: AppCompatActivity() {
 
             dialogBuilder.setPositiveButton("Devam Et") { dialog, which ->
                 val categoryName = categoryNameTextView.text.toString()
-                val categoryDescription = etCategoryDescription.text.toString()
                 val selectedPhoto = ivCategoryPhoto.drawable
 
                 val category = Category(categoryName, selectedPhoto)
-                (categoryList as MutableList<Category>).add(category)
+                categoryList.add(category)
                 categoryAdapter.notifyDataSetChanged()
-                //val categoryBox = createCategoryBox(selectedPhoto, categoryName)
-                // Kullanıcının girdiği değerleri kullanarak ilgili işlemleri gerçekleştirebilirsiniz
-                //val categoryContainer = findViewById<LinearLayout>(R.id.categoryContainer)
-                //categoryContainer.addView(categoryBox)
             }
 
             dialogBuilder.setNegativeButton("İptal") { dialog, which ->
@@ -114,18 +113,14 @@ class NewCategoryActivity: AppCompatActivity() {
 
             dialog.show()
         }
-        //Go next page
+
+        // Go next page
         val btnIngredientsPage: Button = findViewById(R.id.btnIngredientsPage)
         btnIngredientsPage.setOnClickListener {
             val intent = Intent(this, IngredientsActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-
         }
-        //ADDING CATEGORIES AS SQUARE
-
-
-
     }
 
     private fun applyBlurAnimation() {
@@ -184,20 +179,4 @@ class NewCategoryActivity: AppCompatActivity() {
             }
         }
     }
-    /*private fun createCategoryBox(photo: Drawable?, categoryName: String): View {
-        categoryBox = LayoutInflater.from(this.applicationContext).inflate(R.layout.dialog_add_category, null)
-        ivCategoryPhoto.setImageDrawable(photo)
-        categoryNameTextView.text = categoryName
-
-        val categoryContainer = findViewById<LinearLayout>(R.id.categoryContainer)
-        categoryContainer.addView(categoryBox)
-
-        return categoryBox
-    }
-     */
-
-
-
-
-
 }
