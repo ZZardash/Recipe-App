@@ -11,6 +11,8 @@ import android.widget.LinearLayout
 import android.widget.EditText
 
 class IngredientsActivity: AppCompatActivity() {
+
+
     private lateinit var ingredientContainer: LinearLayout
     private lateinit var addIngredientButton: Button
 
