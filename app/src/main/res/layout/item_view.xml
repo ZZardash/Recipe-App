@@ -6,38 +6,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        app:cardCornerRadius="15dp"
-        android:background="#FFC0CB">
+        android:id="@+id/btnCardView"
+        android:layout_width="250dp"
+        android:layout_height="125dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="#FFC0CB"
+        app:cardCornerRadius="15dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/categoryImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:gravity="center" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="vertical">
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_below="@+id/categoryImage"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="4dp"
-            tools:text="recipe title" />
-
-        <ImageView
-            android:id="@+id/categoryImage"
-            android:layout_width="150dp"
-            android:layout_height="125dp"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="4dp"
-            android:gravity="center" />
-
-
-        </LinearLayout>
+            <TextView
+                android:id="@+id/categoryName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textAllCaps="true"
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@android:color/white"
+                android:maxLines="1"
+                android:textSize="14sp"
+                android:ellipsize="end"
+                android:padding="8dp"
+                tools:text="recipe title" />
+        </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
+
 
 
 </RelativeLayout>

@@ -9,10 +9,14 @@ import android.graphics.Color
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.EditText
+import androidx.cardview.widget.CardView
 
 class IngredientsActivity: AppCompatActivity() {
+
+
     private lateinit var ingredientContainer: LinearLayout
     private lateinit var addIngredientButton: Button
+    private lateinit var btnSaveRecipe: Button
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +28,7 @@ class IngredientsActivity: AppCompatActivity() {
 
         ingredientContainer = findViewById(R.id.ingredientContainer)
         addIngredientButton = findViewById(R.id.addIngredientButton)
+        btnSaveRecipe = findViewById(R.id.btnSaveRecipe)
 
         addIngredientButton.setOnClickListener {
             addIngredientRow()
@@ -35,6 +40,12 @@ class IngredientsActivity: AppCompatActivity() {
         val screenWidth = displayMetrics.widthPixels
         val desiredWidth = (screenWidth * 0.8).toInt()
         linearLayout.layoutParams.width = desiredWidth
+    }
+
+    fun saveAllRecipe(cardViewButton: CardView){
+        cardViewButton.setOnClickListener {
+            //Saving ingredients and all recipe to db
+        }
     }
 
     private fun addIngredientRow() {

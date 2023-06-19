@@ -1,38 +1,48 @@
 package com.example.recipe
 
-import android.Manifest
-import android.animation.ObjectAnimator
 import android.content.Intent
+import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.os.Bundle
 import android.provider.MediaStore
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Color
+import android.widget.Button
+import androidx.appcompat.app.AlertDialog
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.view.Gravity
+import android.widget.FrameLayout
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class NewCategoryActivity : AppCompatActivity() {
-    private lateinit var ivCategoryPhoto: ImageView
+class NewCategoryActivity: AppCompatActivity() {
+
+
+    private lateinit var categoryBox: View
+    private lateinit var cardViewButton: CardView
+    private lateinit var etRecipeName: EditText
+    private lateinit var dialogViewCategoryPhoto: ImageView
     private lateinit var categoryNameTextView: TextView
     private lateinit var categoryRecyclerView: RecyclerView
     private lateinit var categoryAdapter: CategoryAdapter
+    private lateinit var btnNewCategory: Button
     private lateinit var btnAddCategory: Button
-    private lateinit var categoryList: MutableList<Category>
+    private lateinit var categoryList: List<Category>
+    private lateinit var etCategoryDescription: TextView
 
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_category)
@@ -40,72 +50,69 @@ class NewCategoryActivity : AppCompatActivity() {
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // Diğer kodlar...
-
-        // 'btnAddCategory' butonuna tıklanıldığında çalışacak kod
+        //cardViewButton = findViewById<CardView>(R.id.btnCategoryCard)
+        //etRecipeName = findViewById<EditText>(R.id.etRecipeName)
         btnAddCategory = findViewById<Button>(R.id.btnAddCategory)
-
         categoryRecyclerView = findViewById(R.id.categoryRecyclerView)
-        categoryRecyclerView.layoutManager = GridLayoutManager(this, 3)
         categoryList = mutableListOf<Category>()
         categoryAdapter = CategoryAdapter(categoryList)
         categoryRecyclerView.adapter = categoryAdapter
 
-        val spacing = resources.getDimensionPixelSize(R.dimen.grid_spacing)
-        val gridSpacingItemDecoration = GridSpacingItemDecoration(3, spacing, true)
-        categoryRecyclerView.addItemDecoration(gridSpacingItemDecoration)
+        setupRecyclerView(categoryRecyclerView)
+        addCategoryClick()
 
-        val spanCount = 3 // Sütun sayısı
-        val spacingBetweenItems = resources.getDimensionPixelSize(R.dimen.grid_spacing) // Öğeler arası boşluk
+    }
+    fun getSelectedCategory(cardViewButton: CardView){
+        cardViewButton.setOnClickListener {
+            val text = etRecipeName.text.toString() // TextView'daki metni al
+        }
+    }
 
+    fun setupRecyclerView(recyclerView: RecyclerView) {
+        val spanCount = 2 // Sütun sayısını istediğiniz değere göre ayarlayın
+
+        // GridLayoutManager oluşturulması
         val layoutManager = GridLayoutManager(this, spanCount)
         layoutManager.orientation = GridLayoutManager.VERTICAL
-        categoryRecyclerView.layoutManager = layoutManager
+        recyclerView.layoutManager = layoutManager
+
+        // GridSpacingItemDecoration oluşturulması
+        val spacing = resources.getDimensionPixelSize(R.dimen.grid_spacing)
+        val includeEdge = true // Kenarları da dahil etmek isterseniz true, sadece iç boşluk isterseniz false olarak ayarlayabilirsiniz
+        val itemDecoration = GridSpacingItemDecoration(spanCount, spacing, includeEdge)
+
+        // RecyclerView'a GridSpacingItemDecoration eklenmesi
+        recyclerView.addItemDecoration(itemDecoration)
+    }
+
+    private fun builderViewPair(): Pair<AlertDialog.Builder, View> {
+        val dialogBuilder = AlertDialog.Builder(this)
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.dialog_add_category, null)
+        dialogBuilder.setView(dialogView)
+        return Pair(dialogBuilder, dialogView)
+    }
+
+    private fun addCategoryClick() {
+
         btnAddCategory.setOnClickListener {
 
             applyBlurAnimation()
-            val dialogBuilder = AlertDialog.Builder(this)
-            val inflater = LayoutInflater.from(this)
-            val dialogView = inflater.inflate(R.layout.dialog_add_category, null)
-            dialogBuilder.setView(dialogView)
 
-            // Kategori İsmi ve Açıklama için EditText alanlarına erişim sağlayabilirsiniz
-            categoryNameTextView = dialogView.findViewById<EditText>(R.id.etCategoryName)
-            val etCategoryDescription = dialogView.findViewById<EditText>(R.id.etCategoryDescription)
-            ivCategoryPhoto = dialogView.findViewById<ImageView>(R.id.ivCategoryPhoto)
+            val (dialogBuilder, dialogView) = builderViewPair()
 
-            ivCategoryPhoto.setOnClickListener {
-                // Fotoğraf seçme işlemlerini burada gerçekleştirin
-                val permissions = arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA
-                )
-                val permissionGranted = permissions.all {
-                    ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-                }
-                if (permissionGranted) {
-                    openGalleryOrCamera()
-                } else {
-                    ActivityCompat.requestPermissions(this, permissions, 1)
-                }
-            }
+            initializeDialogViewElements(dialogView)
 
-            dialogBuilder.setPositiveButton("Devam Et") { dialog, which ->
-                val categoryName = categoryNameTextView.text.toString()
-                val selectedPhoto = ivCategoryPhoto.drawable
+            dialogViewCategoryPhotoClick()
 
-                val category = Category(categoryName, selectedPhoto)
-                categoryList.add(category)
-                categoryAdapter.notifyDataSetChanged()
-            }
+            dialogBuilderButtonSetting(dialogBuilder)
 
-            dialogBuilder.setNegativeButton("İptal") { dialog, which ->
-                // İptal butonuna tıklanıldığında yapılacak işlemleri burada tanımlayabilirsiniz
-            }
 
             val dialog = dialogBuilder.create()
             val window = dialog.window
+
+
+
             window?.setBackgroundDrawableResource(android.R.color.transparent) // Arka planı transparan yapma
             window?.setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT) // Boyutları düzenleme
             window?.setGravity(Gravity.CENTER) // Ortada görüntülenmesi için
@@ -113,14 +120,52 @@ class NewCategoryActivity : AppCompatActivity() {
 
             dialog.show()
         }
+    }
 
-        // Go next page
-        val btnIngredientsPage: Button = findViewById(R.id.btnIngredientsPage)
-        btnIngredientsPage.setOnClickListener {
-            val intent = Intent(this, IngredientsActivity::class.java)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+    private fun dialogBuilderButtonSetting(dialogBuilder: AlertDialog.Builder) {
+        dialogBuilder.setPositiveButton("Devam Et") { dialog, which ->
+            val categoryName = categoryNameTextView.text.toString()
+            val categoryDescription = etCategoryDescription.text.toString()
+            val selectedPhoto = dialogViewCategoryPhoto.drawable
+
+            val category = Category(categoryName, selectedPhoto)
+            (categoryList as MutableList<Category>).add(category)
+            categoryAdapter.notifyDataSetChanged()
+            //Adding name desc, uri to the db
+            //val categoryBox = createCategoryBox(selectedPhoto, categoryName)
+            // Kullanıcının girdiği değerleri kullanarak ilgili işlemleri gerçekleştirebilirsiniz
+            //val categoryContainer = findViewById<LinearLayout>(R.id.categoryContainer)
+            //categoryContainer.addView(categoryBox)
         }
+
+        dialogBuilder.setNegativeButton("İptal") { dialog, which ->
+            // İptal butonuna tıklanıldığında yapılacak işlemleri burada tanımlayabilirsiniz
+        }
+    }
+
+    private fun dialogViewCategoryPhotoClick() {
+        dialogViewCategoryPhoto.setOnClickListener {
+            // Fotoğraf seçme işlemlerini burada gerçekleştirin
+            val permissions = arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA
+            )
+            val permissionGranted = permissions.all {
+                ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+            }
+            if (permissionGranted) {
+                openGalleryOrCamera()
+            } else {
+                ActivityCompat.requestPermissions(this, permissions, 1)
+            }
+        }
+    }
+
+    private fun initializeDialogViewElements(dialogView: View) {
+        categoryNameTextView = dialogView.findViewById<EditText>(R.id.etCategoryName)
+        etCategoryDescription = dialogView.findViewById<EditText>(R.id.etCategoryDescription)
+        dialogViewCategoryPhoto = dialogView.findViewById<ImageView>(R.id.dialogViewCategoryPhoto)
     }
 
     private fun applyBlurAnimation() {
@@ -164,7 +209,7 @@ class NewCategoryActivity : AppCompatActivity() {
                     val bitmap = BitmapFactory.decodeStream(inputStream)
                     val drawable = BitmapDrawable(resources, bitmap)
                     // Seçilen fotoğrafı kullanarak istediğiniz işlemleri yapabilirsiniz
-                    ivCategoryPhoto.setImageDrawable(drawable)
+                    dialogViewCategoryPhoto.setImageDrawable(drawable)
                 }
                 3 -> {
                     // Kameradan çekilen fotoğrafın URI'si
@@ -173,10 +218,19 @@ class NewCategoryActivity : AppCompatActivity() {
                     val bitmap = BitmapFactory.decodeStream(inputStream)
                     val drawable = BitmapDrawable(resources, bitmap)
                     // Seçilen fotoğrafı kullanarak istediğiniz işlemleri yapabilirsiniz
-                    ivCategoryPhoto.setImageDrawable(drawable)
+                    dialogViewCategoryPhoto.setImageDrawable(drawable)
                     // Çekilen fotoğrafı kullanarak istediğiniz işlemleri yapabilirsiniz
                 }
             }
         }
     }
+
+
+
+
+
+
+
+
+
 }

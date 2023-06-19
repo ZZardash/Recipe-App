@@ -19,7 +19,7 @@
         android:src="@drawable/img_full_3" />
 
     <EditText
-        android:id="@+id/edit_recipe_name"
+        android:id="@+id/etRecipeName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Recipe Name"
