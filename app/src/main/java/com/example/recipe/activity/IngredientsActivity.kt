@@ -1,23 +1,21 @@
-package com.example.recipe
-
+package com.example.recipe.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import android.graphics.Color
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.EditText
-import androidx.cardview.widget.CardView
+import com.example.recipe.R
+import com.example.recipe.util.SharedPreferencesHelper
 
 class IngredientsActivity: AppCompatActivity() {
 
-
+    private lateinit var sharedPreferences: SharedPreferencesHelper
     private lateinit var ingredientContainer: LinearLayout
     private lateinit var addIngredientButton: Button
-    private lateinit var btnSaveRecipe: Button
-
+    private lateinit var btnToInstructions: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,9 +24,12 @@ class IngredientsActivity: AppCompatActivity() {
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        sharedPreferences = SharedPreferencesHelper(this)
+
         ingredientContainer = findViewById(R.id.ingredientContainer)
         addIngredientButton = findViewById(R.id.addIngredientButton)
-        btnSaveRecipe = findViewById(R.id.btnSaveRecipe)
+        btnToInstructions = findViewById(R.id.btnToInstructions)
+
 
         addIngredientButton.setOnClickListener {
             addIngredientRow()
@@ -40,11 +41,20 @@ class IngredientsActivity: AppCompatActivity() {
         val screenWidth = displayMetrics.widthPixels
         val desiredWidth = (screenWidth * 0.8).toInt()
         linearLayout.layoutParams.width = desiredWidth
+
+        slideToInstructionsPage()
     }
 
-    fun saveAllRecipe(cardViewButton: CardView){
-        cardViewButton.setOnClickListener {
-            //Saving ingredients and all recipe to db
+    private fun slideToInstructionsPage() {
+        btnToInstructions.setOnClickListener {
+            val ingredientList = collectEditTextValues(ingredientContainer)
+            val ingredientText = ingredientList.joinToString(", ")
+
+            sharedPreferences.saveData("Ingredients", ingredientText)
+
+            val intent = Intent(this, InstructionsActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
     }
 
@@ -59,5 +69,16 @@ class IngredientsActivity: AppCompatActivity() {
 
         ingredientContainer.addView(ingredientRow)
     }
-
+    private fun collectEditTextValues(ingredientContainer: LinearLayout): List<String> {
+        val ingredientList = mutableListOf<String>()
+        for (i in 0 until ingredientContainer.childCount) {
+            val ingredientRow = ingredientContainer.getChildAt(i)
+            val ingredientEditText = ingredientRow.findViewById<EditText>(R.id.ingredientEditText)
+            val ingredientText = ingredientEditText.text.toString().trim()
+            if (ingredientText.isNotEmpty()) {
+                ingredientList.add(ingredientText)
+            }
+        }
+        return ingredientList
+    }
 }

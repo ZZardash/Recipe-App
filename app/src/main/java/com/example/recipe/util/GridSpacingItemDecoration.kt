@@ -1,4 +1,4 @@
-package com.example.recipe
+package com.example.recipe.util
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

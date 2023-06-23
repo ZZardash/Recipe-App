@@ -1,5 +1,6 @@
-package com.example.recipe
+package com.example.recipe.activity
 
+import DatabaseHelper
 import android.content.Intent
 import android.Manifest
 import android.content.pm.PackageManager
@@ -17,6 +18,8 @@ import android.view.Gravity
 import android.widget.FrameLayout
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.view.View
@@ -25,6 +28,14 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.recipe.model.Category
+import com.example.recipe.adapter.CategoryAdapter
+import com.example.recipe.util.GridSpacingItemDecoration
+import com.example.recipe.R
+import com.example.recipe.util.SharedPreferencesHelper
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class NewCategoryActivity: AppCompatActivity() {
 
@@ -38,8 +49,10 @@ class NewCategoryActivity: AppCompatActivity() {
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var btnNewCategory: Button
     private lateinit var btnAddCategory: Button
-    private lateinit var categoryList: List<Category>
+    private lateinit var categoryList: MutableList<Category>
     private lateinit var etCategoryDescription: TextView
+
+    private lateinit var sharedPreferences: SharedPreferencesHelper
 
 
     @SuppressLint("MissingInflatedId")
@@ -50,25 +63,24 @@ class NewCategoryActivity: AppCompatActivity() {
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        sharedPreferences = SharedPreferencesHelper(this)
+
+
         //cardViewButton = findViewById<CardView>(R.id.btnCategoryCard)
         //etRecipeName = findViewById<EditText>(R.id.etRecipeName)
         btnAddCategory = findViewById<Button>(R.id.btnAddCategory)
         categoryRecyclerView = findViewById(R.id.categoryRecyclerView)
         categoryList = mutableListOf<Category>()
-        categoryAdapter = CategoryAdapter(categoryList)
-        categoryRecyclerView.adapter = categoryAdapter
+
 
         setupRecyclerView(categoryRecyclerView)
         addCategoryClick()
 
     }
-    fun getSelectedCategory(cardViewButton: CardView){
-        cardViewButton.setOnClickListener {
-            val text = etRecipeName.text.toString() // TextView'daki metni al
-        }
-    }
 
     fun setupRecyclerView(recyclerView: RecyclerView) {
+        categoryAdapter = CategoryAdapter(categoryList, this)
+        categoryRecyclerView.adapter = categoryAdapter
         val spanCount = 2 // Sütun sayısını istediğiniz değere göre ayarlayın
 
         // GridLayoutManager oluşturulması
@@ -83,6 +95,18 @@ class NewCategoryActivity: AppCompatActivity() {
 
         // RecyclerView'a GridSpacingItemDecoration eklenmesi
         recyclerView.addItemDecoration(itemDecoration)
+        loadCategories()
+    }
+    private fun loadCategories() {
+        val databaseHelper = DatabaseHelper(this)
+        // Veritabanından kategorileri al
+        val categories = databaseHelper.getAllCategories()
+
+        // Kategorileri categoryList listesine ekle
+        categoryList.addAll(categories)
+
+        // Adapter'i güncelle
+        categoryAdapter.notifyDataSetChanged()
     }
 
     private fun builderViewPair(): Pair<AlertDialog.Builder, View> {
@@ -112,7 +136,6 @@ class NewCategoryActivity: AppCompatActivity() {
             val window = dialog.window
 
 
-
             window?.setBackgroundDrawableResource(android.R.color.transparent) // Arka planı transparan yapma
             window?.setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT) // Boyutları düzenleme
             window?.setGravity(Gravity.CENTER) // Ortada görüntülenmesi için
@@ -121,16 +144,36 @@ class NewCategoryActivity: AppCompatActivity() {
             dialog.show()
         }
     }
-
+    private fun saveBitmapToFile(bitmap: Bitmap, fileName: String, context: Context): File? {
+        val file = File(context.filesDir, fileName)
+        return try {
+            val stream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            stream.flush()
+            stream.close()
+            file
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
     private fun dialogBuilderButtonSetting(dialogBuilder: AlertDialog.Builder) {
         dialogBuilder.setPositiveButton("Devam Et") { dialog, which ->
+            val databaseHelper = DatabaseHelper(this)
+
             val categoryName = categoryNameTextView.text.toString()
             val categoryDescription = etCategoryDescription.text.toString()
             val selectedPhoto = dialogViewCategoryPhoto.drawable
+            val bitmap: Bitmap = (selectedPhoto as BitmapDrawable).bitmap
 
-            val category = Category(categoryName, selectedPhoto)
-            (categoryList as MutableList<Category>).add(category)
-            categoryAdapter.notifyDataSetChanged()
+            val file = saveBitmapToFile(bitmap, "$categoryName.png", this) // saveBitmapToFile fonksiyonunu çağır
+            if (file != null) {
+                val categoryId = databaseHelper.insertCategory(categoryName, categoryDescription, file.absolutePath)
+                val category = Category(categoryId, categoryName, categoryDescription, bitmap)
+                categoryList.add(category)
+                categoryAdapter.notifyDataSetChanged()
+            }
+
             //Adding name desc, uri to the db
             //val categoryBox = createCategoryBox(selectedPhoto, categoryName)
             // Kullanıcının girdiği değerleri kullanarak ilgili işlemleri gerçekleştirebilirsiniz
@@ -224,13 +267,4 @@ class NewCategoryActivity: AppCompatActivity() {
             }
         }
     }
-
-
-
-
-
-
-
-
-
 }

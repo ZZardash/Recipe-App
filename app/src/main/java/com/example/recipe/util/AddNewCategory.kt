@@ -1,10 +1,9 @@
-package com.example.recipe
+package com.example.recipe.util
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
+import com.example.recipe.R
 
 
 class AddNewCategory : AppCompatActivity() {
