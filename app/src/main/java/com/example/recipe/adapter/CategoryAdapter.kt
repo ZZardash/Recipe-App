@@ -10,12 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.model.Category
 import com.example.recipe.R
-import com.example.recipe.activity.NewCategoryActivity
 import com.example.recipe.util.CategoryItemClickListener
 
 class CategoryAdapter(private val itemList: MutableList<Category>, private val context: Context) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
@@ -38,23 +36,41 @@ class CategoryAdapter(private val itemList: MutableList<Category>, private val c
         }
 
 
-        fun onLongClick(view: View): Boolean {
+        private fun onLongClick(view: View): Boolean {
             val cardView = view as CardView
             val deleteIcon = cardView.findViewById<ImageView>(R.id.deleteIcon)
-            deleteIcon.visibility = View.INVISIBLE
 
-            cardView.animate()
-                .scaleX(0.9f)
-                .scaleY(0.9f)
-                .setDuration(200)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        deleteIcon.visibility = View.VISIBLE
-                    }
-                })
-                .start()
+            val isAnimationVisible = deleteIcon.tag as? Boolean ?: false
+            if (isAnimationVisible) {
+                // Revert the animation and hide the deleteIcon
+                cardView.animate()
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .setDuration(200)
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            deleteIcon.visibility = View.INVISIBLE
+                            deleteIcon.tag = false
+                        }
+                    })
+                    .start()
+            } else {
+                // Start the animation and show the deleteIcon
+                deleteIcon.visibility = View.INVISIBLE
+                cardView.animate()
+                    .scaleX(0.9f)
+                    .scaleY(0.9f)
+                    .setDuration(200)
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            deleteIcon.visibility = View.VISIBLE
+                            deleteIcon.tag = true
+                        }
+                    })
+                    .start()
+            }
 
-            // Uzun tıklama işlemleri burada gerçekleştirin
+            // Perform additional long click operations here
 
             return true
         }

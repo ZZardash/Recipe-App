@@ -19,6 +19,17 @@
         android:theme="@style/Theme.Recipe"
         tools:targetApi="31">
 
+
+        <activity
+            android:name=".activity.ViewRecipeActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.AppCompat"
+            />
+        <activity
+            android:name=".activity.ViewCategoriesActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.AppCompat"
+            />
         <activity
             android:name=".activity.InstructionsActivity"
             android:windowSoftInputMode="adjustResize"
@@ -49,6 +60,8 @@
             android:name=".activity.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Recipe">
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

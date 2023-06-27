@@ -43,13 +43,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:textAllCaps="true"
-                android:fontFamily="@font/montserrat_bold"
-                android:textColor="@android:color/white"
-                android:maxLines="1"
-                android:textSize="14sp"
                 android:ellipsize="end"
+                android:fontFamily="@font/montserrat_bold"
+                android:maxLines="1"
                 android:padding="8dp"
+                android:textAllCaps="true"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
                 tools:text="recipe title" />
         </RelativeLayout>
 

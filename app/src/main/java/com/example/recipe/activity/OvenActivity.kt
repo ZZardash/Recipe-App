@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.recipe.R
 import com.example.recipe.util.SharedPreferencesHelper
 import com.google.android.material.switchmaterial.SwitchMaterial
+import DatabaseHelper
+import android.content.Intent
+
 
 class OvenActivity : AppCompatActivity() {
 
@@ -39,6 +42,9 @@ class OvenActivity : AppCompatActivity() {
         startButton.setOnClickListener {
 
             saveAllData()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             // Seçilen saat ve dakikayı kullanarak istediğiniz işlemi yapabilirsiniz
             // Örneğin, bir zamanlayıcı başlatma işlemi veya başka bir işlem gerçekleştirme
 
@@ -46,15 +52,17 @@ class OvenActivity : AppCompatActivity() {
     }
 
     private fun saveAllData() {
+
+        val databaseHelper = DatabaseHelper(this)
         val temperatureUnit = getTemperatureUnit()
         val temp = temperature.text.toString()
-        val Temperature = "$temp °$temperatureUnit"
+        val temperature = "$temp °$temperatureUnit"
 
         val selectedHour = timePicker.hour.toString()
         val selectedMinute = timePicker.minute.toString()
         val selectedTime = "$selectedHour:$selectedMinute"
 
-        sharedPreferences.saveData("Temperature", Temperature)
+        sharedPreferences.saveData("Temperature", temperature)
         sharedPreferences.saveData("Selected Time", selectedTime)
 
         val recipeName = sharedPreferences.loadData("RecipeName")
@@ -63,8 +71,12 @@ class OvenActivity : AppCompatActivity() {
         val ins = sharedPreferences.loadData("Instructions")
         val _temp = sharedPreferences.loadData("Temperature")
         val _time = sharedPreferences.loadData("Selected Time")
+        val recipePhotoPath = sharedPreferences.loadData("RecipePhotoPath")
 
-        println(recipeName + "\n" + categoryName + "\n" + ingredients + "\n" + ins + "\n" + _temp + "\n" + _time)
+        println(recipeName + "\n" + categoryName + "\n" + ingredients + "\n" + ins + "\n" + _temp + "\n" + _time + "\n" + recipePhotoPath)
+
+        databaseHelper.insertRecipe(recipeName, categoryName, ingredients, ins, _temp, _time, recipePhotoPath)
+
     }
 
     private fun getTemperatureUnit(): String {

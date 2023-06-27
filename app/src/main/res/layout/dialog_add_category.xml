@@ -35,7 +35,7 @@
         android:id="@+id/dialogViewCategoryPhoto"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/placeholder_img"
+        android:src="@drawable/placeholderimage"
         android:scaleType="centerCrop"
         android:padding="8dp"
         android:clickable="true"

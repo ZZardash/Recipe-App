@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import com.example.recipe.model.Category
+import com.example.recipe.model.Recipe
 import java.io.File
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -35,6 +36,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_INSTRUCTIONS = "instructions"
         private const val COLUMN_TEMPERATURE = "temperature"
         private const val COLUMN_SELECTED_TIME = "selectedTime"
+        private const val COLUMN_RECIPE_PHOTO_PATH = "recipePhotoPath"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -55,7 +57,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 "$COLUMN_INGREDIENTS TEXT," +
                 "$COLUMN_INSTRUCTIONS TEXT," +
                 "$COLUMN_TEMPERATURE TEXT," +
-                "$COLUMN_SELECTED_TIME TEXT" +
+                "$COLUMN_SELECTED_TIME TEXT," +
+                "$COLUMN_RECIPE_PHOTO_PATH TEXT" +
                 ")"
         db.execSQL(createRecipesTableQuery)
     }
@@ -67,6 +70,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         // Create new tables
         onCreate(db)
+
     }
 
     // Helper methods for database operations
@@ -74,7 +78,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
 
     // Insert a new category into the "categories" table
-    fun insertCategory(categoryName: String, categoryDescription: String, categoryPhotoPath: String): Long {
+    fun insertCategory(
+        categoryName: String,
+        categoryDescription: String,
+        categoryPhotoPath: String
+    ): Long {
         val values = ContentValues().apply {
             put(COLUMN_CATEGORY_NAME, categoryName)
             put(COLUMN_CATEGORY_DESCRIPTION, categoryDescription)
@@ -105,7 +113,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         ingredients: String,
         instructions: String,
         temperature: String,
-        selectedTime: String
+        selectedTime: String,
+        recipePhotoPath: String
     ): Long {
         val values = ContentValues().apply {
             put(COLUMN_RECIPE_NAME, recipeName)
@@ -114,6 +123,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_INSTRUCTIONS, instructions)
             put(COLUMN_TEMPERATURE, temperature)
             put(COLUMN_SELECTED_TIME, selectedTime)
+            put(COLUMN_RECIPE_PHOTO_PATH, recipePhotoPath)
         }
 
         val db = writableDatabase
@@ -170,6 +180,36 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return categoryList
     }
 
+    fun getSpecificRecipes(categoryName: String): List<Recipe> {
+        val recipeList = mutableListOf<Recipe>()
 
+        val selectQuery = "SELECT * FROM $TABLE_RECIPES WHERE $COLUMN_SELECTED_CATEGORY = ?"
+        val db = readableDatabase
+        val cursor: Cursor = db.rawQuery(selectQuery, arrayOf(categoryName))
 
+        val recipeName = cursor.getColumnIndex(COLUMN_RECIPE_NAME)
+        val recipeCategoryName = cursor.getColumnIndex(COLUMN_SELECTED_CATEGORY)
+        val recipeInstructions = cursor.getColumnIndex(COLUMN_INSTRUCTIONS)
+        val recipePhotoPath = cursor.getColumnIndex(COLUMN_RECIPE_PHOTO_PATH)
+        val recipeTemperature = cursor.getColumnIndex(COLUMN_TEMPERATURE)
+        val recipeTime = cursor.getColumnIndex(COLUMN_SELECTED_TIME)
+
+        while (cursor.moveToNext()) {
+            val title = cursor.getString(recipeName)
+            val categoryName = cursor.getString(recipeCategoryName)
+            val instructions = cursor.getString(recipeInstructions)
+            val temperature = cursor.getString(recipeTemperature)
+            val time = cursor.getString(recipeTime)
+            val image = cursor.getString(recipePhotoPath)
+            val bitmapImage = decodeBitmapFromFile(image)
+
+            val recipe = Recipe(title, categoryName, instructions, temperature, time, bitmapImage)
+            recipeList.add(recipe)
+        }
+
+        cursor.close()
+        db.close()
+
+        return recipeList
+    }
 }
