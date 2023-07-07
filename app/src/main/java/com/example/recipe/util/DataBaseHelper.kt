@@ -133,6 +133,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return id
     }
 
+    fun deleteRecipe(recipeId: Long): Boolean {
+        val db = writableDatabase
+        val selection = "$COLUMN_ID = ?"
+        val selectionArgs = arrayOf(recipeId.toString())
+        val deletedRows = db.delete(TABLE_RECIPES, selection, selectionArgs)
+        db.close()
+
+        return deletedRows > 0
+    }
 
 
     private fun decodeBitmapFromFile(filePath: String): Bitmap? {
@@ -187,23 +196,27 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val db = readableDatabase
         val cursor: Cursor = db.rawQuery(selectQuery, arrayOf(categoryName))
 
+        val recipeIndexId = cursor.getColumnIndex(COLUMN_ID)
         val recipeName = cursor.getColumnIndex(COLUMN_RECIPE_NAME)
         val recipeCategoryName = cursor.getColumnIndex(COLUMN_SELECTED_CATEGORY)
+        val recipeIngredients = cursor.getColumnIndex(COLUMN_INGREDIENTS)
         val recipeInstructions = cursor.getColumnIndex(COLUMN_INSTRUCTIONS)
         val recipePhotoPath = cursor.getColumnIndex(COLUMN_RECIPE_PHOTO_PATH)
         val recipeTemperature = cursor.getColumnIndex(COLUMN_TEMPERATURE)
         val recipeTime = cursor.getColumnIndex(COLUMN_SELECTED_TIME)
 
         while (cursor.moveToNext()) {
+            val id = cursor.getLong(recipeIndexId)
             val title = cursor.getString(recipeName)
             val categoryName = cursor.getString(recipeCategoryName)
+            val ingredients = cursor.getString(recipeIngredients)
             val instructions = cursor.getString(recipeInstructions)
             val temperature = cursor.getString(recipeTemperature)
             val time = cursor.getString(recipeTime)
             val image = cursor.getString(recipePhotoPath)
             val bitmapImage = decodeBitmapFromFile(image)
 
-            val recipe = Recipe(title, categoryName, instructions, temperature, time, bitmapImage)
+            val recipe = Recipe(id, title, categoryName, ingredients, instructions, temperature, time, bitmapImage)
             recipeList.add(recipe)
         }
 
@@ -212,4 +225,46 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         return recipeList
     }
+
+    fun getRecipeBitmap(recipeName: String): Bitmap? {
+        val selectQuery = "SELECT $COLUMN_RECIPE_PHOTO_PATH FROM $TABLE_RECIPES WHERE $COLUMN_RECIPE_NAME = ?"
+        val db = readableDatabase
+        val cursor: Cursor = db.rawQuery(selectQuery, arrayOf(recipeName))
+
+        val recipePhotoPath = cursor.getColumnIndex(COLUMN_RECIPE_PHOTO_PATH)
+
+        var bitmap: Bitmap? = null
+
+        if (cursor.moveToFirst()) {
+            val photoPath = cursor.getString(recipePhotoPath)
+            bitmap = decodeBitmapFromFile(photoPath)
+        }
+
+        cursor.close()
+        db.close()
+
+        return bitmap
+    }
+
+    fun getRecipeColumnData(recipeId: Long, columnName: String): String? {
+        val selectQuery = "SELECT $columnName FROM $TABLE_RECIPES WHERE $COLUMN_ID = $recipeId"
+        val db = readableDatabase
+        val cursor: Cursor = db.rawQuery(selectQuery, arrayOf(recipeId.toString()))
+
+        var columnData: String? = null
+
+        if (cursor.moveToFirst()) {
+            val columnIndex = cursor.getColumnIndex(columnName)
+            if (columnIndex != -1) {
+                columnData = cursor.getString(columnIndex)
+            }
+        }
+
+        cursor.close()
+        db.close()
+
+        return columnData
+    }
+
+
 }

@@ -19,7 +19,11 @@
         android:theme="@style/Theme.Recipe"
         tools:targetApi="31">
 
-
+        <activity
+            android:name=".activity.RecipePageActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.AppCompat"
+            />
         <activity
             android:name=".activity.ViewRecipeActivity"
             android:windowSoftInputMode="adjustResize"

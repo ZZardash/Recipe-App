@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="grid_spacing">8dp</dimen> <!-- Adjust the spacing value as needed -->
+    <dimen name="corner_radius">10dp</dimen>
+    <dimen name="selected_view_height">2dp</dimen> <!-- Set the desired height for the line -->
+    <dimen name="margin_bottom">8dp</dimen>
+    <dimen name="time_picker_margin_start">16dp</dimen>
+    <dimen name="time_picker_margin_end">16dp</dimen>
 </resources>

@@ -13,6 +13,10 @@ import com.example.recipe.util.SharedPreferencesHelper
 import com.google.android.material.switchmaterial.SwitchMaterial
 import DatabaseHelper
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import com.example.recipe.model.Category
+import com.example.recipe.model.Recipe
 
 
 class OvenActivity : AppCompatActivity() {
@@ -22,6 +26,7 @@ class OvenActivity : AppCompatActivity() {
     private lateinit var timePicker: TimePicker
     private lateinit var startButton: Button
     private lateinit var temperature: EditText
+    private lateinit var recipeList: MutableList<Recipe>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +38,7 @@ class OvenActivity : AppCompatActivity() {
 
         sharedPreferences = SharedPreferencesHelper(this)
 
+        recipeList = mutableListOf()
         temperature = findViewById(R.id.etTemperature)
         timePicker = findViewById(R.id.timePicker)
         timePicker.setIs24HourView(true) // 24 saat formatında göstermek için
@@ -72,13 +78,21 @@ class OvenActivity : AppCompatActivity() {
         val _temp = sharedPreferences.loadData("Temperature")
         val _time = sharedPreferences.loadData("Selected Time")
         val recipePhotoPath = sharedPreferences.loadData("RecipePhotoPath")
+        val bitmapPhoto = decodeBitmapFromFile(recipePhotoPath)
 
         println(recipeName + "\n" + categoryName + "\n" + ingredients + "\n" + ins + "\n" + _temp + "\n" + _time + "\n" + recipePhotoPath)
 
-        databaseHelper.insertRecipe(recipeName, categoryName, ingredients, ins, _temp, _time, recipePhotoPath)
+        val recipeId = databaseHelper.insertRecipe(recipeName, categoryName, ingredients, ins, _temp, _time, recipePhotoPath)
+        val recipe = Recipe(recipeId, recipeName, categoryName, ingredients, ins, _temp, _time, bitmapPhoto)
+        recipeList.add(recipe)
 
     }
 
+    private fun decodeBitmapFromFile(photoPath: String): Bitmap? {
+        val options = BitmapFactory.Options()
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888
+        return BitmapFactory.decodeFile(photoPath, options)
+    }
     private fun getTemperatureUnit(): String {
         val switchTemperatureUnit = findViewById<SwitchMaterial>(R.id.switchTemperatureUnit)
         return if (switchTemperatureUnit.isChecked) {

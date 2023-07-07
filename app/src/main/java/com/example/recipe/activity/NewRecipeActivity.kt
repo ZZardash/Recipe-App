@@ -131,32 +131,33 @@ class NewRecipeActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK && data != null) {
             when (requestCode) {
                 2 -> {
                     // Galeriden seçilen fotoğrafın URI'si
-                    val imageUri = data?.data
-                    val inputStream = contentResolver.openInputStream(imageUri!!)
-                    val bitmap = BitmapFactory.decodeStream(inputStream)
-                    val drawable = BitmapDrawable(resources, bitmap)
-                    // Seçilen fotoğrafı kullanarak istediğiniz işlemleri yapabilirsiniz
-                    addRecipePhoto.setImageDrawable(drawable)
+                    val imageUri = data.data
+                    if (imageUri != null) {
+                        val inputStream = contentResolver.openInputStream(imageUri!!)
+                        val bitmap = BitmapFactory.decodeStream(inputStream)
+                        val drawable = BitmapDrawable(resources, bitmap)
+                        // Seçilen fotoğrafı kullanarak istediğiniz işlemleri yapabilirsiniz
+                        addRecipePhoto.setImageDrawable(drawable)
+                    }
                 }
 
                 3 -> {
                     // Kameradan çekilen fotoğrafın URI'si
-                    val imageUri = data?.data
-                    val inputStream = contentResolver.openInputStream(imageUri!!)
-                    val bitmap = BitmapFactory.decodeStream(inputStream)
-                    val drawable = BitmapDrawable(resources, bitmap)
-
-                    // Seçilen fotoğrafı kullanarak istediğiniz işlemleri yapabilirsiniz
-                    addRecipePhoto.setImageDrawable(drawable)
-                    // Çekilen fotoğrafı kullanarak istediğiniz işlemleri yapabilirsiniz
+                    val imageUri = data.data
+                    if (imageUri != null) {
+                        val inputStream = contentResolver.openInputStream(imageUri!!)
+                        val bitmap = BitmapFactory.decodeStream(inputStream)
+                        val drawable = BitmapDrawable(resources, bitmap)
+                        // Seçilen fotoğrafı kullanarak istediğiniz işlemleri yapabilirsiniz
+                        addRecipePhoto.setImageDrawable(drawable)
+                        // Çekilen fotoğrafı kullanarak istediğiniz işlemleri yapabilirsiniz
+                    }
                 }
-
             }
-
         }
     }
 }

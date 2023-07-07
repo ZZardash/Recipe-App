@@ -4,9 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.graphics.Color
+import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.EditText
+import android.widget.NumberPicker
+import android.widget.Toast
 import com.example.recipe.R
 import com.example.recipe.util.SharedPreferencesHelper
 
@@ -31,6 +34,8 @@ class IngredientsActivity: AppCompatActivity() {
         btnToInstructions = findViewById(R.id.btnToInstructions)
 
 
+
+
         addIngredientButton.setOnClickListener {
             addIngredientRow()
         }
@@ -39,11 +44,12 @@ class IngredientsActivity: AppCompatActivity() {
         val linearLayout = findViewById<LinearLayout>(R.id.linearLayout)
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
-        val desiredWidth = (screenWidth * 0.8).toInt()
+        val desiredWidth = (screenWidth * 0.9).toInt()
         linearLayout.layoutParams.width = desiredWidth
 
         slideToInstructionsPage()
     }
+
 
     private fun slideToInstructionsPage() {
         btnToInstructions.setOnClickListener {
