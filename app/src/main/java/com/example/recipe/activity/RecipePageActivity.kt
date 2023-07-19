@@ -3,90 +3,81 @@ package com.example.recipe.activity
 import DatabaseHelper
 import android.app.Activity
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.RoundRectShape
 import android.os.Bundle
-import android.view.View
+import android.text.TextUtils
+import android.text.method.ScrollingMovementMethod
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.view.ViewCompat
+import androidx.core.content.res.ResourcesCompat
 import com.example.recipe.R
-import kotlinx.android.synthetic.main.activity_new_category.textView
-import org.w3c.dom.Text
 
 class RecipePageActivity : AppCompatActivity() {
-
-
 
     private lateinit var ingredientsButton: Button
     private lateinit var preparationButton: Button
     private lateinit var contentLayout: FrameLayout
     private lateinit var recipeTitle: TextView
     private lateinit var dynamicLayout: LinearLayout
+    private lateinit var ingredientsTextView: TextView
 
-    private val ingredientsLayout: View by lazy {
-        layoutInflater.inflate(R.layout.view_recipe_ingredients, contentLayout, false)
-
-    }
-
-    private val preparationLayout: View by lazy {
-        layoutInflater.inflate(R.layout.view_recipe_preperation, contentLayout, false)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recipe_page)
+        val databaseHelper = DatabaseHelper(this)
+
+        databaseHelper.showTableColumns()
         window.decorView.setBackgroundColor(Color.TRANSPARENT)
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        initializeUI()
+
+        val (title, image, recipeId) = getIntentData(databaseHelper)
+
+        val ingredients = databaseHelper.getRecipeColumnData(recipeId, "ingredients")
+        val ingredientsArray: Array<String> = ingredients.toString().split(",").toTypedArray()
+
+        val instructions = databaseHelper.getRecipeColumnData(recipeId, "instructions").toString()
+        println(instructions)
+
+        recipeTitle.text = title
+        recipeTitle.background = BitmapDrawable(resources, image)
+
+        selectButton(ingredientsButton)
+        showIngredients(ingredientsArray)
+        ingredientsButton.setOnClickListener {
+            showIngredients(ingredientsArray)
+            setIngredientsLayer()
+            selectButton(ingredientsButton)
+
+        }
+        preparationButton.setOnClickListener {
+            showPreparation()
+            showInstructions(instructions)
+            selectButton(preparationButton)
+        }
+    }
+
+    private fun getIntentData(databaseHelper: DatabaseHelper): Triple<String, Bitmap, Long> {
+        val title = intent.getStringExtra("recipeTitle").toString()
+        val image = databaseHelper.getRecipeBitmap(title)!! //Fetching the image with using getRecipeBitmap
+        val defValue = 0L
+        val recipeId = intent.getLongExtra("recipeId", defValue)
+        return Triple(title, image, recipeId)
+    }
+
+    private fun initializeUI() {
         ingredientsButton = findViewById(R.id.ingredientsButton)
         preparationButton = findViewById(R.id.preparationButton)
         contentLayout = findViewById(R.id.contentLayout)
         recipeTitle = findViewById(R.id.recipeTitle)
         dynamicLayout = findViewById(R.id.dynamicLayout)
-
-        val databaseHelper = DatabaseHelper(this)
-        val title = intent.getStringExtra("recipeTitle").toString()
-        val image = databaseHelper.getRecipeBitmap(title)!! //Fetching the image with using getRecipeBitmap
-
-
-        val defValue:Long = 0L
-        val recipeId = intent.getLongExtra("recipeId", defValue)
-        val ingredients = databaseHelper.getRecipeColumnData(recipeId, "COLUMN_INGREDIENTS")
-        println(recipeId)
-        println(ingredients)
-
-
-        recipeTitle.text = title
-
-        selectButton(ingredientsButton)
-        ingredientsButton.setOnClickListener {
-            showIngredients()
-            setIngredientsLayer()
-            selectButton(ingredientsButton)
-        }
-
-        preparationButton.setOnClickListener {
-            showPreparation()
-            selectButton(preparationButton)
-
-        }
     }
 
     private fun selectButton(button: Button) {
@@ -102,36 +93,74 @@ class RecipePageActivity : AppCompatActivity() {
     }
 
     private fun setIngredientsLayer() {
-        val linearLayout = ingredientsLayout.findViewById<LinearLayout>(R.id.linearLayout)
-        val displayMetrics = resources.displayMetrics
-        val screenWidth = displayMetrics.widthPixels
-        val desiredWidth = (screenWidth * 0.6).toInt()
-        linearLayout.layoutParams.width = desiredWidth
+        val layoutParams = ingredientsTextView.layoutParams as FrameLayout.LayoutParams
+        layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT
+        ingredientsTextView.layoutParams = layoutParams
     }
 
-    private fun showIngredients() {
-        // İçerik düğmesini seçili hale getir
-        ingredientsButton.isSelected = true
-        preparationButton.isSelected = false
+    //this funcitons is gonna add inside view_recipe_ingredients
+    private fun showIngredients(ingredients: Array<String>) {
+        // Create a new TextView for ingredients if it doesn't exist
+        if (!::ingredientsTextView.isInitialized) {
+            ingredientsTextView = TextView(this)
+            ingredientsTextView.setTextColor(Color.WHITE)
+            ingredientsTextView.setBackgroundColor(Color.TRANSPARENT)
+            ingredientsTextView.setTextSize(14f)
+            ingredientsTextView.setPadding(8, 25, 8, 8)
+            ingredientsTextView.maxLines = 10
+            ingredientsTextView.ellipsize = TextUtils.TruncateAt.END
+            ingredientsTextView.movementMethod = ScrollingMovementMethod.getInstance()
+            ingredientsTextView.isVerticalScrollBarEnabled = true
 
-        // İçeriği değiştir
+            // Set the custom font
+            val customTypeface = ResourcesCompat.getFont(this, R.font.montserrat_bold)
+            ingredientsTextView.typeface = customTypeface
+        }
+
+        // Set the ingredients array as the text content
+        val ingredientsWithDots = ingredients.map { "\u2022 $it" }
+        ingredientsTextView.text = ingredientsWithDots.joinToString("\n")
+
+        // Update the contentLayout with the ingredientsTextView
         contentLayout.removeAllViews()
-        contentLayout.addView(ingredientsLayout)
+        contentLayout.addView(ingredientsTextView)
     }
+
+    private fun showInstructions(instructions: String) {
+        val preparationItemView = TextView(this)
+        preparationItemView.setTextColor(Color.WHITE)
+        preparationItemView.setBackgroundColor(Color.TRANSPARENT)
+        preparationItemView.setTextSize(14f)
+        preparationItemView.setPadding(8, 25, 8, 8)
+        preparationItemView.maxLines = 10
+        preparationItemView.ellipsize = TextUtils.TruncateAt.END
+        preparationItemView.movementMethod = ScrollingMovementMethod.getInstance()
+        preparationItemView.isVerticalScrollBarEnabled = true
+
+        // Set the custom font
+        val customTypeface = ResourcesCompat.getFont(this, R.font.montserrat_bold)
+        preparationItemView.typeface = customTypeface
+
+        // Set the instructions as the text content
+        preparationItemView.text = instructions
+
+        // Add the preparationItemView to the dynamicLayout
+        dynamicLayout.addView(preparationItemView)
+    }
+
 
     private fun showPreparation() {
-        // İçerik düğmesini seçili hale getir
-        ingredientsButton.isSelected = false
-        preparationButton.isSelected = true
+        // Remove the ingredientsTextView from the contentLayout if it exists
+        if (::ingredientsTextView.isInitialized) {
+            contentLayout.removeView(ingredientsTextView)
+        }
 
-        // İçeriği değiştir
-        contentLayout.removeAllViews()
-        contentLayout.addView(preparationLayout)
+        // Show the preparation layout or perform any desired action for the "Preparation" button
+        // Add your logic here
     }
 
     override fun onBackPressed() {
         setResult(Activity.RESULT_CANCELED)
         super.onBackPressed()
     }
-
 }
