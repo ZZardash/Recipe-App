@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ingredients"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
-
     <EditText
         android:id="@+id/ingredientEditText"
         android:layout_width="0dp"

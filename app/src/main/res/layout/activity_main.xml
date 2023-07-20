@@ -16,7 +16,7 @@
             android:background="@drawable/img_half_1"
             android:fontFamily="@font/montserrat_bold"
             android:onClick="onAddRecipeButtonClick"
-            android:text="Add New Recipe"
+            android:text="New Recipe"
             android:textSize="18sp"
             android:textStyle="bold"
             tools:layout_editor_absoluteX="0dp"
@@ -30,7 +30,7 @@
         android:layout_weight="1">
 
         <Button
-            android:id="@+id/btnViewRecipes"
+            android:id="@+id/btnViewRecipe"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="View Recipes"

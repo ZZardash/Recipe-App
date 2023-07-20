@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- item_view.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layoutCategories"
+    android:id="@+id/layoutRecipes"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,7 +8,7 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/btnCardView"
+        android:id="@+id/btnRecipeCardView"
         android:layout_width="250dp"
         android:layout_height="125dp"
         android:foreground="?android:attr/selectableItemBackground"
@@ -20,36 +20,35 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <ImageView
-                android:id="@+id/categoryImage"
+                android:id="@+id/recipeImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:gravity="center" />
             <ImageView
-                android:id="@+id/deleteIcon"
+                android:id="@+id/deleteIconRecipe"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_gravity="top|end"
-                android:layout_alignTop="@id/categoryImage"
-                android:layout_alignEnd="@id/categoryImage"
+                android:layout_alignTop="@id/recipeImage"
+                android:layout_alignEnd="@id/recipeImage"
                 android:src="@drawable/ic_delete"
                 android:padding="8dp"
                 android:visibility="invisible"/>
 
             <TextView
-                android:id="@+id/categoryName"
+                android:id="@+id/recipeName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:ellipsize="end"
-                android:fontFamily="@font/montserrat_bold"
-                android:maxLines="1"
-                android:padding="8dp"
                 android:textAllCaps="true"
+                android:fontFamily="@font/montserrat_bold"
                 android:textColor="@android:color/white"
+                android:maxLines="1"
                 android:textSize="14sp"
+                android:ellipsize="end"
+                android:padding="8dp"
                 tools:text="recipe title" />
         </RelativeLayout>
 
