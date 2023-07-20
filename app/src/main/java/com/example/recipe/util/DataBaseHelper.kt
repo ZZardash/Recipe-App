@@ -247,7 +247,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     fun getRecipeColumnData(recipeId: Long, columnName: String): String? {
-        val selectQuery = "SELECT $columnName FROM $TABLE_RECIPES WHERE $COLUMN_ID = $recipeId"
+        val selectQuery = "SELECT $columnName FROM $TABLE_RECIPES WHERE $COLUMN_ID = ?"
         val db = readableDatabase
         val cursor: Cursor = db.rawQuery(selectQuery, arrayOf(recipeId.toString()))
 
@@ -266,5 +266,30 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return columnData
     }
 
+
+    fun showTableColumns() {
+        val columnNames = mutableListOf<String>()
+        val selectQuery = "PRAGMA table_info(recipes)"
+        val db = readableDatabase
+        val cursor = db.rawQuery(selectQuery, null)
+
+        if (cursor != null) {
+            val columnNameIndex = cursor.getColumnIndex("name")
+            if (columnNameIndex != -1) {
+                while (cursor.moveToNext()) {
+                    val columnName = cursor.getString(columnNameIndex)
+                    columnNames.add(columnName)
+                }
+            }
+            cursor.close()
+        }
+        db.close()
+
+// Access the column names in the 'columnNames' list
+        for (columnName in columnNames) {
+            println(columnName)
+        }
+
+    }
 
 }

@@ -15,6 +15,7 @@
         android:layout_centerInParent="true"
         android:layout_weight="20"
         android:ellipsize="end"
+        android:scaleType="centerCrop"
         android:fontFamily="@font/montserrat_bold"
         android:gravity="center"
         android:maxLines="1"
@@ -67,10 +68,11 @@
         <FrameLayout
             android:id="@+id/contentLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
+            android:layout_height="match_parent"
+            />
 
     </LinearLayout>
+
 </LinearLayout>
 
 
