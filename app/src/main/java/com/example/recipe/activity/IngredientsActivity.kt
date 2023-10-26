@@ -14,7 +14,6 @@ import com.example.recipe.R
 import com.example.recipe.util.SharedPreferencesHelper
 
 class IngredientsActivity: AppCompatActivity() {
-
     private lateinit var sharedPreferences: SharedPreferencesHelper
     private lateinit var ingredientContainer: LinearLayout
     private lateinit var addIngredientButton: Button
@@ -26,16 +25,12 @@ class IngredientsActivity: AppCompatActivity() {
         window.decorView.setBackgroundColor(Color.TRANSPARENT)
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
-
         sharedPreferences = SharedPreferencesHelper(this)
 
         ingredientContainer = findViewById(R.id.ingredientContainer)
         addIngredientButton = findViewById(R.id.addIngredientButton)
         btnToInstructions = findViewById(R.id.btnToInstructions)
-
-
-
-
+        
         addIngredientButton.setOnClickListener {
             addIngredientRow()
         }
@@ -49,8 +44,7 @@ class IngredientsActivity: AppCompatActivity() {
 
         slideToInstructionsPage()
     }
-
-
+    
     private fun slideToInstructionsPage() {
         btnToInstructions.setOnClickListener {
             val ingredientList = collectEditTextValues(ingredientContainer)
