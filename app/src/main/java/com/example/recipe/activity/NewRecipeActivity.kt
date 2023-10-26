@@ -28,19 +28,22 @@ class NewRecipeActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferencesHelper
     private lateinit var addRecipePhoto: ImageView
-    private lateinit var placeholderDrawable: Drawable
+    private lateinit var btnNewCategory: Button
+    private lateinit var recipeName: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_recipe)
+
+        //Background = transparent, Action Bar and ActionBarTitle disabled.
         window.decorView.setBackgroundColor(Color.TRANSPARENT)
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         sharedPreferences = SharedPreferencesHelper(this)
         addRecipePhoto = findViewById(R.id.addRecipePhoto)
+        btnNewCategory = findViewById(R.id.btnNewCategory)
 
-        val btnNewCategory: Button = findViewById(R.id.btnNewCategory)
         newCategoryButtonClick(btnNewCategory)
         addRecipePhotoClick()
     }
@@ -48,13 +51,11 @@ class NewRecipeActivity : AppCompatActivity() {
     private fun newCategoryButtonClick(btnNewCategory: Button) {
         btnNewCategory.setOnClickListener {
             //Saving recipe name to RecipeData class
-            val recipeName: EditText = findViewById(R.id.etRecipeName)
+            recipeName = findViewById(R.id.etRecipeName)
             val enteredRecipeName = recipeName.text.toString()
             val photo = addRecipePhoto.drawable
             val selectedPhoto: Bitmap = (photo as BitmapDrawable).bitmap
             val file = saveBitmapToFile(selectedPhoto, "$enteredRecipeName.png", this)
-            println(file)
-
 
             if (file != null){
                 sharedPreferences.saveData("RecipePhotoPath", file.absolutePath)

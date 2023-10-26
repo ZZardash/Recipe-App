@@ -13,38 +13,31 @@ import com.example.recipe.R
 import com.example.recipe.ui.theme.RecipeTheme
 
 class MainActivity : ComponentActivity() {
-
+    //Eben
+    // lateinit => will be initialize after
     private lateinit var btnAddRecipe: Button
     private lateinit var btnViewRecipe: Button
 
+    // savedInstanceState:Bundle? => used for recreate activity or restore the state
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            RecipeTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    // Layout and other components here
-                }
-            }
-        }
 
+        // Setting the content to activity layout
         setContentView(R.layout.activity_main)
 
         btnAddRecipe = findViewById(R.id.btnAddRecipe)
         btnViewRecipe = findViewById(R.id.btnViewRecipe)
 
         addRecipeIntent()
-
-
     }
 
 
     private fun addRecipeIntent(){
         btnAddRecipe.setOnClickListener {
+            // Setting the intent that goes to another activity
             val intent = Intent(this, NewRecipeActivity::class.java)
             startActivity(intent)
+            // Animation transition
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
         btnViewRecipe.setOnClickListener {

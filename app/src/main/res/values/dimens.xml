@@ -6,4 +6,13 @@
     <dimen name="margin_bottom">8dp</dimen>
     <dimen name="time_picker_margin_start">16dp</dimen>
     <dimen name="time_picker_margin_end">16dp</dimen>
+    <dimen name="clock_image_size">32dp</dimen>
+    <dimen name="separator_height">2dp</dimen>
+    <dimen name="image_margin_end">8dp</dimen>
+    <dimen name="title_margin_start">16dp</dimen>
+    <dimen name="title_margin_top">2dp</dimen>
+    <dimen name="separator_top_margin">16dp</dimen>
+    <dimen name="time_temp_margin">150dp</dimen>
+    <dimen name="ingredients_text_padding">30dp</dimen>
+
 </resources>
