@@ -41,8 +41,10 @@ class RecipePageActivity : AppCompatActivity() {
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        // Initialize UI components
         initializeUI()
 
+        // Retrieve and display data from Intent
         val (title, image, recipeId) = getIntentData(databaseHelper)
 
         val ingredients = databaseHelper.getRecipeColumnData(recipeId, "ingredients")
@@ -54,9 +56,11 @@ class RecipePageActivity : AppCompatActivity() {
 
         println(time)
 
+        // Set the title and background image
         recipeTitle.text = title
         recipeTitle.background = BitmapDrawable(resources, image)
 
+        // Set up functionality for "Ingredients" and "Preparation" buttons
         selectButton(ingredientsButton)
         showCombinedDetailsIngredients(ingredientsArray, temperature, time)
         ingredientsButton.setOnClickListener {
@@ -89,11 +93,11 @@ class RecipePageActivity : AppCompatActivity() {
 
     private fun selectButton(button: Button) {
         if (button == ingredientsButton) {
-            // Selecting "Ingredients" button
+            // When selecting the "Ingredients" button
             ingredientsButton.setTextColor(Color.parseColor("#47A187"))
             preparationButton.setTextColor(Color.parseColor("#FFFFFF"))
         } else if (button == preparationButton) {
-            // Selecting "Preparation" button
+            // When selecting the "Preparation" button
             ingredientsButton.setTextColor(Color.parseColor("#FFFFFF"))
             preparationButton.setTextColor(Color.parseColor("#47A187"))
         }
@@ -132,7 +136,6 @@ class RecipePageActivity : AppCompatActivity() {
         contentLayout.addView(preparationTextView)
     }
 
-
     private fun showCombinedDetailsIngredients(ingredients: Array<String>, temperature: String, selectedTime: String) {
         // Remove the existing child view from contentLayout if it exists
         contentLayout.removeAllViews()
@@ -160,7 +163,7 @@ class RecipePageActivity : AppCompatActivity() {
         clockImageView.setColorFilter(Color.WHITE) // Set the clock icon's color to white
         clockImageView.setPadding(20,0,0,0)
         val imageSize = resources.getDimensionPixelSize(R.dimen.clock_image_size)
-        val imageMarginEnd = resources.getDimensionPixelSize(R.dimen.image_margin_end)
+        val imageMarginEnd = resources.getimensionPixelSize(R.dimen.image_margin_end)
         clockImageView.layoutParams = LinearLayout.LayoutParams(imageSize, imageSize).apply {
             marginEnd = imageMarginEnd
         }
@@ -248,8 +251,6 @@ class RecipePageActivity : AppCompatActivity() {
         // Add the combinedLayout to your contentLayout or any other appropriate layout
         contentLayout.addView(combinedLayout)
     }
-
-
 
     override fun onBackPressed() {
         setResult(Activity.RESULT_CANCELED)
