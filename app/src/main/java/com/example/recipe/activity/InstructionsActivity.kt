@@ -9,9 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.recipe.R
 import com.example.recipe.util.SharedPreferencesHelper
 
-
 class InstructionsActivity : AppCompatActivity() {
-
     private lateinit var sharedPreferences: SharedPreferencesHelper
     private lateinit var instructionsText:EditText
     private lateinit var btnToOven: Button
@@ -27,7 +25,6 @@ class InstructionsActivity : AppCompatActivity() {
         btnToOven = findViewById(R.id.btnToOven)
 
         goToOvenPage()
-
     }
 
     private fun goToOvenPage(){
