@@ -1,3 +1,4 @@
+//First Page (Main Menu)
 package com.example.recipe.activity
 
 import android.content.Intent
@@ -13,7 +14,6 @@ import com.example.recipe.R
 import com.example.recipe.ui.theme.RecipeTheme
 
 class MainActivity : ComponentActivity() {
-    //Eben
     // lateinit => will be initialize after
     private lateinit var btnAddRecipe: Button
     private lateinit var btnViewRecipe: Button
@@ -25,6 +25,7 @@ class MainActivity : ComponentActivity() {
         // Setting the content to activity layout
         setContentView(R.layout.activity_main)
 
+        //Finding the spesific elemnt by its id
         btnAddRecipe = findViewById(R.id.btnAddRecipe)
         btnViewRecipe = findViewById(R.id.btnViewRecipe)
 
