@@ -1,3 +1,4 @@
+//Second Page (New Recipe)
 package com.example.recipe.activity
 
 import android.Manifest
@@ -40,6 +41,7 @@ class NewRecipeActivity : AppCompatActivity() {
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        //Defining the sharedPreferences class 
         sharedPreferences = SharedPreferencesHelper(this)
         addRecipePhoto = findViewById(R.id.addRecipePhoto)
         btnNewCategory = findViewById(R.id.btnNewCategory)
@@ -52,6 +54,8 @@ class NewRecipeActivity : AppCompatActivity() {
         btnNewCategory.setOnClickListener {
             //Saving recipe name to RecipeData class
             recipeName = findViewById(R.id.etRecipeName)
+            
+            //Taking Recipe name, photo and saving it to the sharedPreferences
             val enteredRecipeName = recipeName.text.toString()
             val photo = addRecipePhoto.drawable
             val selectedPhoto: Bitmap = (photo as BitmapDrawable).bitmap
