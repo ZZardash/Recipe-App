@@ -163,7 +163,7 @@ class RecipePageActivity : AppCompatActivity() {
         clockImageView.setColorFilter(Color.WHITE) // Set the clock icon's color to white
         clockImageView.setPadding(20,0,0,0)
         val imageSize = resources.getDimensionPixelSize(R.dimen.clock_image_size)
-        val imageMarginEnd = resources.getimensionPixelSize(R.dimen.image_margin_end)
+        val imageMarginEnd = resources.getDimensionPixelSize(R.dimen.image_margin_end)
         clockImageView.layoutParams = LinearLayout.LayoutParams(imageSize, imageSize).apply {
             marginEnd = imageMarginEnd
         }
