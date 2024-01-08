@@ -1,4 +1,4 @@
-//Second Page (New Recipe)
+// İkinci Sayfa (Yeni Tarif)
 package com.example.recipe.activity
 
 import android.Manifest
@@ -39,12 +39,12 @@ class NewRecipeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_recipe)
 
-        //Background = transparent, Action Bar and ActionBarTitle disabled.
+        // Arka plan = şeffaf, ActionBar ve ActionBar Başlığı devre dışı bırakıldı.
         window.decorView.setBackgroundColor(Color.TRANSPARENT)
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        //Defining the sharedPreferences class 
+        // SharedPreferences sınıfını tanımla
         sharedPreferences = SharedPreferencesHelper(this)
         addRecipePhoto = findViewById(R.id.addRecipePhoto)
         btnNewCategory = findViewById(R.id.btnNewCategory)
@@ -54,27 +54,32 @@ class NewRecipeActivity : AppCompatActivity() {
             showCancelConfirmationDialog()
         }
 
+        // Yeni kategori butonuna tıklanıldığında işlemleri gerçekleştir
         newCategoryButtonClick(btnNewCategory)
+        // Tarif fotoğrafına tıklanıldığında işlemleri gerçekleştir
         addRecipePhotoClick()
+        // RatingBar'ı ayarla
         setupRatingBar()
     }
 
+    // RatingBar'ı ayarla
     private fun setupRatingBar() {
         ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
-            // Save the rating to SharedPreferences
+            // Oylamayı SharedPreferences'e kaydet
             sharedPreferences.saveData("recipeRate", rating.toString())
+            // Rating bilgisini yazdır (debug amaçlı)
             println(rating)
-            // You can display a Toast or perform other actions as needed
+            // İhtiyaç duyulan diğer işlemleri gerçekleştirebilirsiniz (örneğin, Toast mesajı gösterme)
             Toast.makeText(this, "Rating: $rating", Toast.LENGTH_SHORT).show()
         }
     }
 
+    // İptal işlemi onaylama dialogunu göster
     private fun showCancelConfirmationDialog() {
         val alertDialogBuilder = AlertDialog.Builder(this)
         alertDialogBuilder.setMessage("Are you sure to cancel your recipe?")
         alertDialogBuilder.setPositiveButton("Yes") { _, _ ->
             // Kullanıcı "Yes" butonuna tıkladığında yapılacak işlemler
-            // Örneğin, Main Activity'e dönüş işlemi
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_left,)
@@ -86,23 +91,23 @@ class NewRecipeActivity : AppCompatActivity() {
         }
         val alertDialog = alertDialogBuilder.create()
 
-        // Ekranın ortasına kayma animasyonu eklemek için aşağıdaki satırı kullanabilirsiniz
+        // Ekranın ortasına kayma animasyonu eklemek için
         alertDialog.window?.attributes?.windowAnimations = 0
         alertDialog.show()
     }
 
+    // Yeni kategori butonuna tıklanıldığında işlemleri gerçekleştir
     private fun newCategoryButtonClick(btnNewCategory: Button) {
         btnNewCategory.setOnClickListener {
-            //Saving recipe name to RecipeData class
+            // RecipeName elemanını tanımla ve içeriğini al
             recipeName = findViewById(R.id.etRecipeName)
-
-            //Taking Recipe name, photo and saving it to the sharedPreferences
             val enteredRecipeName = recipeName.text.toString()
 
             if (enteredRecipeName.isEmpty()) {
-                // Show a toast message indicating that the recipe name cannot be empty
+                // Recipe name boş olamaz uyarısı göster
                 Toast.makeText(this, "Recipe name cannot be empty", Toast.LENGTH_SHORT).show()
             } else {
+                // Recipe adını ve fotoğrafını SharedPreferences'e kaydet
                 val photo = addRecipePhoto.drawable
                 val selectedPhoto: Bitmap = (photo as BitmapDrawable).bitmap
                 val file = saveBitmapToFile(selectedPhoto, "$enteredRecipeName.png", this)
@@ -111,7 +116,8 @@ class NewRecipeActivity : AppCompatActivity() {
                     sharedPreferences.saveData("RecipePhotoPath", file.absolutePath)
                 }
                 sharedPreferences.saveData("RecipeName", enteredRecipeName)
-                //Transition
+
+                // Yeni kategori ekranına geçiş
                 val intent = Intent(this, NewCategoryActivity::class.java)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
@@ -119,7 +125,7 @@ class NewRecipeActivity : AppCompatActivity() {
         }
     }
 
-
+    // Bitmap'i dosyaya kaydeden yardımcı fonksiyon
     private fun saveBitmapToFile(bitmap: Bitmap, fileName: String, context: Context): File? {
         val directory = File(context.filesDir, "category_images")
         if (!directory.exists()) {
@@ -138,9 +144,10 @@ class NewRecipeActivity : AppCompatActivity() {
         }
     }
 
+    // Tarif fotoğrafına tıklanıldığında işlemleri gerçekleştir
     private fun addRecipePhotoClick() {
         addRecipePhoto.setOnClickListener {
-            // Fotoğraf seçme işlemlerini burada gerçekleştirin
+            // Fotoğraf seçme işlemlerini gerçekleştir
             val permissions = arrayOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -157,10 +164,11 @@ class NewRecipeActivity : AppCompatActivity() {
         }
     }
 
+    // Galeri veya Kamera açma işlemini gerçekleştir
     private fun openGalleryOrCamera() {
-        val options = arrayOf<CharSequence>("Galeri", "Kamera")
+        val options = arrayOf<CharSequence>("Gallery", "Camera")
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Fotoğraf Seç")
+        builder.setTitle("Select Photo")
         builder.setItems(options) { _, which ->
             when (which) {
                 0 -> openGallery()
@@ -170,42 +178,43 @@ class NewRecipeActivity : AppCompatActivity() {
         builder.show()
     }
 
+    // Galeri açma işlemini gerçekleştir
     private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(intent, 2)
     }
 
+    // Kamera açma işlemini gerçekleştir
     private fun openCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(intent, 3)
     }
 
-
+    // onActivityResult fonksiyonu ile geri dönülen sonuçları işle
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            super.onActivityResult(requestCode, resultCode, data)
-            if (resultCode == RESULT_OK) {
-                when (requestCode) {
-                    2 -> { // Gallery
-                        val imageUri = data?.data
-                        if (imageUri != null) {
-                            val inputStream = contentResolver.openInputStream(imageUri)
-                            val bitmap = BitmapFactory.decodeStream(inputStream)
-                            val drawable = BitmapDrawable(resources, bitmap)
-                            addRecipePhoto.setImageDrawable(drawable)
-                        }
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                2 -> { // Galeri
+                    val imageUri = data?.data
+                    if (imageUri != null) {
+                        val inputStream = contentResolver.openInputStream(imageUri)
+                        val bitmap = BitmapFactory.decodeStream(inputStream)
+                        val drawable = BitmapDrawable(resources, bitmap)
+                        addRecipePhoto.setImageDrawable(drawable)
                     }
+                }
 
-                    3 -> { // Camera
-                        // Check if the data parameter is null
-                        if (data != null && data.extras != null) {
-                            // Extract the bitmap from the camera intent's extras
-                            val bitmap = data.extras?.get("data") as Bitmap
-                            val drawable = BitmapDrawable(resources, bitmap)
-                            addRecipePhoto.setImageDrawable(drawable)
-                        }
+                3 -> { // Kamera
+                    // Veri parametresinin null olup olmadığını kontrol et
+                    if (data != null && data.extras != null) {
+                        // Kameradan alınan bitmap'i çıkar
+                        val bitmap = data.extras?.get("data") as Bitmap
+                        val drawable = BitmapDrawable(resources, bitmap)
+                        addRecipePhoto.setImageDrawable(drawable)
                     }
                 }
             }
         }
     }
-
+}

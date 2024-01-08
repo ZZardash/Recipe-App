@@ -18,6 +18,7 @@ import com.example.recipe.util.GridSpacingItemDecoration
 
 class ViewCategoriesActivity : AppCompatActivity() {
 
+    // Gerekli değişkenleri tanımla
     private lateinit var categoryAdapter: ViewCategoryAdapter
     private lateinit var categoryRecyclerView: RecyclerView
     private lateinit var categoryList: MutableList<Category>
@@ -28,41 +29,51 @@ class ViewCategoriesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_category)
+
+        // ActionBar'ı gizle ve arkaplan rengini ayarla
         window.decorView.setBackgroundColor(Color.TRANSPARENT)
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        // UI bileşenlerini ilgili XML elemanlarıyla bağla
         categoryRecyclerView = findViewById(R.id.categoryRecyclerView)
         categoryList = mutableListOf()
         originalCategoryList = mutableListOf()
         searchEditText = findViewById(R.id.searchEditText)
         btnHome = findViewById(R.id.btnHome)
-        btnHome.setOnClickListener{
+        btnHome.setOnClickListener {
+            // Ana ekrana geçiş yap
             transitionToHome()
         }
 
+        // Arama işlevselliği için dinleyiciyi ayarla
         setupSearchListener()
+        // RecyclerView ve adaptörü ayarla
         setupRecyclerView(categoryRecyclerView)
+        // Kategorileri yükle
         loadCategories()
     }
 
+    // Ana ekrana geçiş metodu
     private fun transitionToHome() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        overridePendingTransition( R.anim.slide_out_right, R.anim.slide_in_left,)
+        overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_left)
         finish() // Bu aktiviteyi kapat
     }
 
+    // Arama işlevselliği için TextWatcher dinleyicisi ayarla
     private fun setupSearchListener() {
         searchEditText.addTextChangedListener(createTextWatcher())
     }
 
+    // TextWatcher dinleyicisi oluştur
     private fun createTextWatcher(): TextWatcher {
         return object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                // Filter recipes based on the search query
+                // Arama sorgusuna göre kategorileri filtrele
                 filterRecipes(charSequence.toString())
             }
 
@@ -70,6 +81,7 @@ class ViewCategoriesActivity : AppCompatActivity() {
         }
     }
 
+    // RecyclerView ve adaptörü ayarla
     private fun setupRecyclerView(recyclerView: RecyclerView) {
         categoryAdapter = ViewCategoryAdapter(categoryList, this)
         recyclerView.adapter = categoryAdapter
@@ -86,24 +98,30 @@ class ViewCategoriesActivity : AppCompatActivity() {
         recyclerView.addItemDecoration(itemDecoration)
     }
 
+    // Kategorileri yükle
     private fun loadCategories() {
         val databaseHelper = DatabaseHelper(this)
         val categories = databaseHelper.getAllCategories()
 
+        // Listeleri temizle ve kategorileri ekle
         categoryList.clear()
         originalCategoryList.clear()
 
         categoryList.addAll(categories)
         originalCategoryList.addAll(categories)
 
+        // Adaptörü güncelle
         categoryAdapter.notifyDataSetChanged()
     }
 
+    // Kategorileri arama metodu
     private fun filterRecipes(query: String) {
+        // Orijinal kategori listesinde sorguya uyanları filtrele
         val filteredList = originalCategoryList.filter { category ->
             category.text.contains(query, ignoreCase = true)
         }
 
+        // Kategori listesini güncelle ve adaptörü bilgilendir
         categoryList.clear()
         categoryList.addAll(filteredList)
         categoryAdapter.notifyDataSetChanged()

@@ -31,19 +31,29 @@ class InstructionsActivity : AppCompatActivity() {
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        // SharedPreferencesHelper sınıfı ile veri paylaşımı için nesne oluşturuluyor.
         sharedPreferences = SharedPreferencesHelper(this)
+
+        // Arayüz bileşenlerine erişim için gerekli nesneler tanımlanıyor.
         btnToOven = findViewById(R.id.btnToOven)
         btnCancelRecipe = findViewById(R.id.btnCancelRecipe)
         btnAddVideo = findViewById(R.id.btnAddVideo)
+
+        // Video eklemek için dialog gösteren butona tıklanınca çalışacak fonksiyon atanıyor.
         btnAddVideo.setOnClickListener {
             showAddVideoDialog()
         }
+
+        // İptal işlemi için onaylama dialogu gösteren butona tıklanınca çalışacak fonksiyon atanıyor.
         btnCancelRecipe.setOnClickListener {
             showCancelConfirmationDialog()
         }
+
+        // Fırın sayfasına geçiş yapacak butona tıklanınca çalışacak fonksiyon atanıyor.
         goToOvenPage()
     }
 
+    // Video eklemek için dialog gösteren fonksiyon
     private fun showAddVideoDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_video, null)
         val dialogBuilder = AlertDialog.Builder(this)
@@ -62,12 +72,12 @@ class InstructionsActivity : AppCompatActivity() {
             val videoLink = editTextVideoLink.text.toString()
 
             if (videoLink.isNotEmpty()) {
-                // Check if the limit is reached (assuming the limit is 3)
+                // Video limitine ulaşılıp ulaşılmadığını kontrol et
                 if (isVideoLimitReached()) {
-                    // Show an alert indicating that the video limit is reached
+                    // Video limitine ulaşıldığını belirten bir uyarı göster
                     showVideoLimitReachedAlert()
                 } else if (isDuplicateLink(videoLink)) {
-                    // Show an alert indicating that the link is already saved
+                    // Linkin zaten kayıtlı olduğunu belirten bir uyarı göster
                     showDuplicateLinkAlert()
                 } else {
                     saveVideoLink(videoLink)
@@ -75,18 +85,20 @@ class InstructionsActivity : AppCompatActivity() {
                     alertDialog.dismiss()
                 }
             } else {
-                // Show an alert indicating that the link cannot be empty
+                // Linkin boş olamayacağını belirten bir uyarı göster
                 Toast.makeText(this, "Link cannot be empty", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+    // Linkin zaten kayıtlı olup olmadığını kontrol eden fonksiyon
     private fun isDuplicateLink(newLink: String): Boolean {
         val currentVideoLinks = sharedPreferences.loadData("videoLink")
         val videoLinksArray = currentVideoLinks.split("\n")
         return videoLinksArray.any { it.trim().equals(newLink.trim(), ignoreCase = true) }
     }
 
+    // Zaten kaydedilmiş bir linkin eklenmek istenmesi durumunda gösterilen uyarı
     private fun showDuplicateLinkAlert() {
         val alertDialogBuilder = AlertDialog.Builder(this)
         alertDialogBuilder.setMessage("This link is already saved.")
@@ -97,14 +109,14 @@ class InstructionsActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
-
+    // Video limitine ulaşılıp ulaşılmadığını kontrol eden fonksiyon
     private fun isVideoLimitReached(): Boolean {
         val currentVideoLinks = sharedPreferences.loadData("videoLink")
-        println(currentVideoLinks)
         val videoLinksArray = currentVideoLinks.split("\n")
         return videoLinksArray.size > 3
     }
 
+    // Video limitine ulaşıldığını belirten bir uyarı gösteren fonksiyon
     private fun showVideoLimitReachedAlert() {
         val alertDialogBuilder = AlertDialog.Builder(this)
         alertDialogBuilder.setMessage("You have reached the video limit.")
@@ -115,13 +127,14 @@ class InstructionsActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
-
+    // Video linkini kaydeden fonksiyon
     private fun saveVideoLink(videoLink: String) {
         val currentVideoLinks = sharedPreferences.loadData("videoLink")
         val newVideoLinks = "$currentVideoLinks$videoLink\n"
         sharedPreferences.saveStringData("videoLink", newVideoLinks)
     }
 
+    // Eklenen video linkini gösteren buton ekleyen fonksiyon
     private fun addVideoButton(videoName: String, videoLink: String) {
         val layout: ConstraintLayout = findViewById(R.id.constraintInstructions)
         var linearLayout: LinearLayout? = null
@@ -161,7 +174,7 @@ class InstructionsActivity : AppCompatActivity() {
             newButton.setBackgroundResource(R.drawable.instagram)
         } else if (videoLink.contains("tiktok", true)) {
             newButton.setBackgroundResource(R.drawable.tiktok)
-        }else{
+        } else {
             newButton.setBackgroundResource(R.drawable.default_video)
         }
 
@@ -174,7 +187,6 @@ class InstructionsActivity : AppCompatActivity() {
             true
         }
 
-
         linearLayout.addView(newButton)
 
         if (linearLayout.childCount > 1) {
@@ -183,14 +195,16 @@ class InstructionsActivity : AppCompatActivity() {
             params.leftMargin = 16
         }
     }
+
+    // Video linkini silmek için onaylama dialogu gösteren fonksiyon
     private fun showDeleteConfirmationDialog(button: Button, videoLink: String) {
         val alertDialogBuilder = AlertDialog.Builder(this)
         alertDialogBuilder.setMessage("Are you sure to delete this video link?")
         alertDialogBuilder.setPositiveButton("Yes") { _, _ ->
-            // Remove the video link from SharedPreferences
+            // Video linkini SharedPreferences'ten sil
             removeVideoLink(videoLink)
 
-            // Remove the button from its parent layout
+            // Butonu parent layout'tan kaldır
             val parentLayout = button.parent as LinearLayout
             parentLayout.removeView(button)
         }
@@ -201,12 +215,14 @@ class InstructionsActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
+    // Video linkini SharedPreferences'ten silen fonksiyon
     private fun removeVideoLink(videoLink: String) {
         val currentVideoLinks = sharedPreferences.loadData("videoLink")
         val newVideoLinks = currentVideoLinks.replace("$videoLink\n", "")
         sharedPreferences.saveStringData("videoLink", newVideoLinks)
     }
 
+    // Video linkini açan fonksiyon
     private fun openVideoLink(videoLinks: String) {
         val linksArray = videoLinks.split("\n")
 
@@ -228,7 +244,7 @@ class InstructionsActivity : AppCompatActivity() {
                         videoIntent.setPackage("com.zhiliaoapp.musically")
                     }
                     else -> {
-                        // Handle other platforms if needed
+                        // Diğer platformları işle, gerekirse
                     }
                 }
 
@@ -244,6 +260,7 @@ class InstructionsActivity : AppCompatActivity() {
         }
     }
 
+    // İptal işlemi için onaylama dialogu gösteren fonksiyon
     private fun showCancelConfirmationDialog() {
         val alertDialogBuilder = AlertDialog.Builder(this)
         alertDialogBuilder.setMessage("Are you sure to cancel your recipe?")
@@ -262,6 +279,7 @@ class InstructionsActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
+    // Fırın sayfasına geçiş yapacak butona tıklanınca çalışacak fonksiyon
     private fun goToOvenPage() {
         btnToOven.setOnClickListener {
             instructionsText = findViewById(R.id.instructionsEditText)

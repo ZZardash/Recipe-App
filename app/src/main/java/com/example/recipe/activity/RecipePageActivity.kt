@@ -1,3 +1,4 @@
+// Tarif Sayfası (RecipePage) Aktivitesi
 package com.example.recipe.activity
 
 import DatabaseHelper
@@ -7,16 +8,13 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
@@ -55,10 +53,10 @@ class RecipePageActivity : AppCompatActivity() {
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // Initialize UI components
+        // UI bileşenlerini başlat
         initializeUI()
 
-        // Retrieve and display data from Intent
+        // Intent'ten verileri al ve görüntüle
         val (title, image, recipeId) = getIntentData(databaseHelper)
 
         val ingredients = databaseHelper.getRecipeColumnData(recipeId, "ingredients")
@@ -76,17 +74,16 @@ class RecipePageActivity : AppCompatActivity() {
         val videoLink = databaseHelper.getRecipeColumnData(recipeId, "videoLink").toString()
 
 
-        //Set the rateBar to recipeRate
+        //RateBar'ı recipeRate'a ayarla
         recipeRate?.let {
             ratingBar.rating = it
         }
 
-
-        // Set the title and background image
+        // Başlık ve arkaplan resmi ayarla
         recipeTitle.text = title
         recipeTitle.background = BitmapDrawable(resources, image)
 
-        // Set up functionality for "Ingredients" and "Preparation" buttons
+        // "İçindekiler" ve "Hazırlık" düğmeleri için işlevsellik kur
         selectButton(ingredientsButton, true)
         showCombinedDetailsIngredients(ingredientsArray, temperature, time)
         ingredientsButton.setOnClickListener {
@@ -101,10 +98,8 @@ class RecipePageActivity : AppCompatActivity() {
             selectButton(ingredientsButton, true)
         }
 
-        // Set OnTouchListener to dynamicLayout
-
+        // dynamicLayout için OnTouchListener ayarla
     }
-
 
     private fun transitionToHome() {
         val intent = Intent(this, MainActivity::class.java)
@@ -112,6 +107,7 @@ class RecipePageActivity : AppCompatActivity() {
         overridePendingTransition( R.anim.slide_out_right, R.anim.slide_in_left,)
         finish() // Bu aktiviteyi kapat
     }
+
     private fun unselectButton(button: Button) {
         // İlgili butonu seçilmedi olarak işaretlemek ve rengini değiştirmek için kullanılır
         button.setBackgroundColor(Color.parseColor("#000000"))
@@ -133,22 +129,21 @@ class RecipePageActivity : AppCompatActivity() {
         clockImageView = ImageView(this)
     }
 
-
-    private fun selectButton(button: Button, isSelected:Boolean) {
-        // Set initial color values
+    private fun selectButton(button: Button, isSelected: Boolean) {
+        // Başlangıç renk değerlerini ayarla
         val startColor = if (isSelected) Color.parseColor("#47A187") else ContextCompat.getColor(this, androidx.appcompat.R.color.ripple_material_dark)
         val endColor = if (isSelected) ContextCompat.getColor(this, androidx.appcompat.R.color.ripple_material_dark) else Color.parseColor("#47A187")
 
-        // Create ObjectAnimator for color change
+        // Renk değişimi için ObjectAnimator oluştur
         val colorAnimator = ObjectAnimator.ofArgb(button, "textColor", startColor, endColor)
-        colorAnimator.duration = 300 // Animation duration in milliseconds
+        colorAnimator.duration = 300 // Animasyon süresi milisaniye cinsinden
 
-        // Create ObjectAnimator for scaling
+        // Ölçeklendirme için ObjectAnimator oluştur
         val scaleValue = if (isSelected) 1.05f else 1.0f
         val scaleX = ObjectAnimator.ofFloat(button, View.SCALE_X, scaleValue)
         val scaleY = ObjectAnimator.ofFloat(button, View.SCALE_Y, scaleValue)
 
-        // Create AnimatorSet to play animations together
+        // Animasyonları birlikte oynatmak için AnimatorSet oluştur
         val animatorSet = AnimatorSet()
         animatorSet.playTogether(colorAnimator, scaleX, scaleY)
         animatorSet.start()
@@ -163,13 +158,13 @@ class RecipePageActivity : AppCompatActivity() {
     }
 
     private fun showPreparation(instructions: String, videoLinks: String) {
-        // Remove the ingredientsTextView from the contentLayout if it exists
+        // Eğer varsa ingredientsTextView'ı contentLayout'tan kaldır
         if (::ingredientsTextView.isInitialized) {
             contentLayout.removeView(ingredientsTextView)
         }
 
-        // Show the preparation layout or perform any desired action for the "Preparation" button
-        // Set the instructions as the text content
+        // Hazırlık düzenini göster veya "Hazırlık" düğmesi için istenen herhangi bir işlemi gerçekleştir
+        // Talimatları metin içeriği olarak ayarla
         val customTypeface = ResourcesCompat.getFont(this, R.font.montserrat_bold)
 
         val preparationTextView = TextView(this)
@@ -182,11 +177,11 @@ class RecipePageActivity : AppCompatActivity() {
         preparationTextView.movementMethod = ScrollingMovementMethod.getInstance()
         preparationTextView.isVerticalScrollBarEnabled = true
 
-        // Update the contentLayout with the preparationTextView
+        // İçerik düzenini preparationTextView ile güncelle
         contentLayout.removeAllViews()
         contentLayout.addView(preparationTextView)
 
-        // Create a LinearLayout to hold the buttons
+        // Düğmeleri tutan bir LinearLayout oluştur
         val buttonsLayout = LinearLayout(this)
         buttonsLayout.orientation = LinearLayout.HORIZONTAL
         buttonsLayout.gravity = Gravity.CENTER
@@ -194,30 +189,30 @@ class RecipePageActivity : AppCompatActivity() {
         val videoLinksArray = videoLinks.split("\n")
         println(videoLinks)
         for (link in videoLinksArray) {
-            // Check if the link contains "youtube", "instagram", or "tiktok"
+            // Bağlantı "youtube", "instagram" veya "tiktok" içeriyorsa kontrol et
             when {
                 link.contains("youtube", true) || link.contains("youtu.be", true) -> {
-                    // Create YouTube button
+                    // YouTube düğmesi oluştur
                     addButtonWithDrawable(link, R.drawable.youtube, buttonsLayout)
                 }
 
                 link.contains("instagram", true) -> {
-                    // Create Instagram button
+                    // Instagram düğmesi oluştur
                     addButtonWithDrawable(link, R.drawable.instagram, buttonsLayout)
                 }
 
                 link.contains("tiktok", true) -> {
-                    // Create TikTok button
+                    // TikTok düğmesi oluştur
                     addButtonWithDrawable(link, R.drawable.tiktok,  buttonsLayout)
                 }
                 else -> {
-                    // Handle other platforms if needed
-                addButtonWithDrawable(link, R.drawable.default_video,  buttonsLayout)
+                    // Gerekirse diğer platformları ele al
+                    addButtonWithDrawable(link, R.drawable.default_video,  buttonsLayout)
                 }
             }
         }
 
-        // Add the buttonsLayout to contentLayout
+        // buttonsLayout'ı contentLayout'a ekle
         contentLayout.addView(buttonsLayout)
     }
 
@@ -225,7 +220,7 @@ class RecipePageActivity : AppCompatActivity() {
         val button = Button(this)
         button.setBackgroundResource(drawableResId)
         button.setOnClickListener {
-            // Implement logic to open the corresponding link
+            // Karşılık gelen bağlantıyı açmak için mantık uygula
             openVideoLink(link)
         }
         val params = LinearLayout.LayoutParams(
@@ -263,7 +258,7 @@ class RecipePageActivity : AppCompatActivity() {
                         videoIntent.setPackage("com.zhiliaoapp.musically")
                     }
                     else -> {
-                        // Handle other platforms if needed
+                        // Gerekirse diğer platformları ele al
                     }
                 }
 
@@ -274,15 +269,16 @@ class RecipePageActivity : AppCompatActivity() {
                     startActivity(videoIntent)
                 }
             } else {
-                Toast.makeText(this, "Please enter a valid video link", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Lütfen geçerli bir video bağlantısı girin", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
     private fun showCombinedDetailsIngredients(ingredients: Array<String>, temperature: String, selectedTime: String) {
-        // Remove the existing child view from contentLayout if it exists
+        // Eğer varsa mevcut çocuk görünümünü contentLayout'tan kaldır
         contentLayout.removeAllViews()
 
-        // Create the parent LinearLayout for the combined details and ingredients
+        // Birleşik detaylar ve içerik için ana LinearLayout'i oluştur
         val combinedLayout = LinearLayout(this)
         combinedLayout.orientation = LinearLayout.VERTICAL
         combinedLayout.layoutParams = LinearLayout.LayoutParams(
@@ -290,19 +286,19 @@ class RecipePageActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
 
-        // Create the horizontal LinearLayout for the time and temperature
+        // Zaman ve sıcaklık için yatay LinearLayout'i oluştur
         val timeTempLayout = LinearLayout(this)
         timeTempLayout.orientation = LinearLayout.HORIZONTAL
         timeTempLayout.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        timeTempLayout.gravity = Gravity.CENTER_VERTICAL // Center vertically
+        timeTempLayout.gravity = Gravity.CENTER_VERTICAL // Dikey olarak ortala
 
-        // Create and add the clock icon to the timeTempLayout
+        // Saat resmini timeTempLayout'a ekle
         val clockImageView = ImageView(this)
         clockImageView.setImageResource(R.drawable.clock)
-        clockImageView.setColorFilter(Color.WHITE) // Set the clock icon's color to white
+        clockImageView.setColorFilter(Color.WHITE) // Saat resminin rengini beyaz yap
         clockImageView.setPadding(20, 0, 0, 0)
         val imageSize = resources.getDimensionPixelSize(R.dimen.clock_image_size)
         val imageMarginEnd = resources.getDimensionPixelSize(R.dimen.image_margin_end)
@@ -311,39 +307,39 @@ class RecipePageActivity : AppCompatActivity() {
         }
         timeTempLayout.addView(clockImageView)
 
-        // Create and add the time TextView to the timeTempLayout
+        // Saat TextView'ini timeTempLayout'a ekle
         val timeTextView = TextView(this)
         timeTextView.text = selectedTime
         timeTextView.setTextColor(Color.WHITE)
-        timeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32f) // Set font size to 32sp
+        timeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32f) // Yazı tipi boyutunu 32sp olarak ayarla
         val timeTempMargin = resources.getDimensionPixelSize(R.dimen.time_temp_margin)
         timeTextView.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         ).apply {
-            marginEnd = timeTempMargin // Add margin to the right
+            marginEnd = timeTempMargin // Sağa margin ekle
         }
         timeTempLayout.addView(timeTextView)
 
-        // Create and add the temperature ImageView to the timeTempLayout
+        // Sıcaklık resmini timeTempLayout'a ekle
         val temperatureImageView = ImageView(this)
         temperatureImageView.setImageResource(R.drawable.temperature)
-        temperatureImageView.setColorFilter(Color.WHITE) // Set the temperature icon's color to white
+        temperatureImageView.setColorFilter(Color.WHITE) // Sıcaklık resminin rengini beyaz yap
         val temperatureIconSize = resources.getDimensionPixelSize(R.dimen.clock_image_size)
         temperatureImageView.layoutParams = LinearLayout.LayoutParams(temperatureIconSize, temperatureIconSize)
         timeTempLayout.addView(temperatureImageView)
 
-        // Create and add the temperature TextView to the timeTempLayout
+        // Sıcaklık TextView'ini timeTempLayout'a ekle
         val temperatureTextView = TextView(this)
         temperatureTextView.text = temperature
         temperatureTextView.setTextColor(Color.WHITE)
-        temperatureTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32f) // Set font size to 32sp
+        temperatureTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32f) // Yazı tipi boyutunu 32sp olarak ayarla
         timeTempLayout.addView(temperatureTextView)
 
-        // Add the timeTempLayout to the combinedLayout
+        // timeTempLayout'ı combinedLayout'a ekle
         combinedLayout.addView(timeTempLayout)
 
-        // Create and add a white line separator
+        // Beyaz çizgi ayıran bir görünüm oluştur
         val separatorView = View(this)
         separatorView.setBackgroundColor(Color.WHITE)
         val separatorHeight = resources.getDimensionPixelSize(R.dimen.separator_height)

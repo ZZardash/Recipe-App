@@ -1,3 +1,4 @@
+// Fırın (Oven) Aktivite
 package com.example.recipe.activity
 
 import DatabaseHelper
@@ -22,7 +23,6 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
 
 class OvenActivity : AppCompatActivity() {
 
@@ -70,17 +70,17 @@ class OvenActivity : AppCompatActivity() {
                 sharedPreferences.deleteData("videoLink")
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                // Your delayed code here
+                // Gecikmeli kodunuz burada
             }
         }
     }
 
+    // İptal işlemini onaylama dialogunu göster
     private fun showCancelConfirmationDialog() {
         val alertDialogBuilder = AlertDialog.Builder(this)
         alertDialogBuilder.setMessage("Are you sure to cancel your recipe?")
         alertDialogBuilder.setPositiveButton("Yes") { _, _ ->
             // Kullanıcı "Yes" butonuna tıkladığında yapılacak işlemler
-            // Örneğin, Main Activity'e dönüş işlemi
             sharedPreferences.deleteData("videoLink")
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -93,11 +93,12 @@ class OvenActivity : AppCompatActivity() {
         }
         val alertDialog = alertDialogBuilder.create()
 
-        // Ekranın ortasına kayma animasyonu eklemek için aşağıdaki satırı kullanabilirsiniz
+        // Ekranın ortasına kayma animasyonu eklemek için
         alertDialog.window?.attributes?.windowAnimations = 0
         alertDialog.show()
     }
 
+    // Tüm verileri kaydet
     private fun saveAllData() {
 
         val databaseHelper = DatabaseHelper(this)
@@ -125,21 +126,23 @@ class OvenActivity : AppCompatActivity() {
 
         println(ingredients)
 
-        println("!!!"+videoLink+"!!!")
+        println("!!!" + videoLink + "!!!")
 
-        println(recipeName + "\n" + categoryName + "\n" + ingredients + "\n" + ins + "\n" + _temp + "\n" + _time + "\n" + recipePhotoPath + "\n" + recipeRate+ "\n" + videoLink)
+        println(recipeName + "\n" + categoryName + "\n" + ingredients + "\n" + ins + "\n" + _temp + "\n" + _time + "\n" + recipePhotoPath + "\n" + recipeRate + "\n" + videoLink)
 
         val recipeId = databaseHelper.insertRecipe(recipeName, categoryName, ingredients, ins, _temp, _time, recipePhotoPath, recipeRate, videoLink)
         val recipe = Recipe(recipeId, recipeName, categoryName, ingredients, ins, _temp, _time, bitmapPhoto, recipeRate, videoLink)
         recipeList.add(recipe)
-
     }
 
+    // Dosyadan bitmap çözme işlevi
     private fun decodeBitmapFromFile(photoPath: String): Bitmap? {
         val options = BitmapFactory.Options()
         options.inPreferredConfig = Bitmap.Config.ARGB_8888
         return BitmapFactory.decodeFile(photoPath, options)
     }
+
+    // Sıcaklık birimini al
     private fun getTemperatureUnit(): String {
         val switchTemperatureUnit = findViewById<SwitchMaterial>(R.id.switchTemperatureUnit)
         return if (switchTemperatureUnit.isChecked) {
@@ -157,8 +160,4 @@ class OvenActivity : AppCompatActivity() {
             (amPmView.parent as LinearLayout).removeView(amPmView)
         }
     }
-
-
-
-
 }

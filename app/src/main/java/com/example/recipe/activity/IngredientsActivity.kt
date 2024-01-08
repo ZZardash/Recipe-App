@@ -21,7 +21,6 @@ import com.example.recipe.util.SharedPreferencesHelper
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import java.util.*
 
-
 class IngredientsActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferencesHelper
@@ -39,41 +38,46 @@ class IngredientsActivity : AppCompatActivity() {
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        // SharedPreferencesHelper sınıfı ile veri paylaşımı için nesne oluşturuluyor.
         sharedPreferences = SharedPreferencesHelper(this)
 
+        // Arayüz bileşenlerine erişim için gerekli nesneler tanımlanıyor.
         addIngredientButton = findViewById(R.id.addIngredientButton)
         btnToInstructions = findViewById(R.id.btnToInstructions)
         btnCancelRecipe = findViewById(R.id.btnCancelRecipe)
         recyclerView = findViewById(R.id.recyclerViewIngredients)
         itemsArrayList = arrayListOf()
 
-
+        // İptal işlemi için onaylama dialogu gösteren fonksiyon çağrılıyor.
         btnCancelRecipe.setOnClickListener {
             showCancelConfirmationDialog()
         }
 
+        // Yeni bir malzeme eklemek için butona tıklanınca çalışacak fonksiyon çağrılıyor.
         addIngredientButton.setOnClickListener {
             addIngredientRow()
         }
 
+        // Tarif sayfasına geçiş yapacak butona tıklanınca çalışacak fonksiyon çağrılıyor.
         slideToInstructionsPage()
 
-        // Setup RecyclerView
-        myAdapter = MyAdapter(itemsArrayList)
-
+        // RecyclerView için gerekli ayarlamalar yapılıyor.
         setupRecyclerView()
-
-        // Add some initial data for testing
-        myAdapter.notifyDataSetChanged()
     }
 
+    // İptal onaylama dialogunu gösteren fonksiyon
     private fun showCancelConfirmationDialog() {
         val alertDialogBuilder = AlertDialog.Builder(this)
         alertDialogBuilder.setMessage("Are you sure to cancel your recipe?")
         alertDialogBuilder.setPositiveButton("Yes") { _, _ ->
+            // Video bağlantısını SharedPreferences'ten sil.
             sharedPreferences.deleteData("videoLink")
+
+            // Ana aktiviteye geçiş yapılıyor.
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+
+            // Ekran geçiş animasyonları ayarlanıyor.
             overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_left)
             finish()
         }
@@ -85,6 +89,7 @@ class IngredientsActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
+    // Tarif sayfasına geçiş yapacak butona tıklanınca çalışacak fonksiyon
     private fun slideToInstructionsPage() {
         btnToInstructions.setOnClickListener {
             // Tüm değerleri topla ve SharedPreferences'e kaydet
@@ -94,11 +99,13 @@ class IngredientsActivity : AppCompatActivity() {
             // Diğer işlemleri gerçekleştir
             val intent = Intent(this, InstructionsActivity::class.java)
             startActivity(intent)
+
+            // Ekran geçiş animasyonları ayarlanıyor.
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
     }
 
-
+    // EditText değerlerini toplayan ve birleştiren fonksiyon
     private fun collectEditTextValues(): String {
         val ingredientTextList = mutableListOf<String>()
         for (i in 0 until myAdapter.itemCount) {
@@ -109,29 +116,25 @@ class IngredientsActivity : AppCompatActivity() {
             if (itemName != null && itemName.isNotBlank() && itemName != "New Ingredient") {
                 ingredientTextList.add(itemName)
             } else {
-                // Debugging statement to print the problematic values
+                // Hata ayıklama için boş veya 'New Ingredient' değerini atla
                 Log.d("IngredientDebug", "Skipping empty or 'New Ingredient' value: $itemName")
             }
         }
         return ingredientTextList.joinToString(", ")
     }
 
-
-
-
-
+    // Yeni bir malzeme satırı ekleyen fonksiyon
     private fun addIngredientRow() {
         val newItem = ItemsDataClass("New Ingredient")
         itemsArrayList.add(newItem)
         myAdapter.notifyItemInserted(itemsArrayList.size - 1)
     }
 
+    // RecyclerView'i ayarlayan fonksiyon
     private fun setupRecyclerView() {
         myAdapter = MyAdapter(itemsArrayList)
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = myAdapter
-
-        // ... (existing setup code)
 
         val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
             ItemTouchHelper.UP or ItemTouchHelper.DOWN,
@@ -166,8 +169,8 @@ class IngredientsActivity : AppCompatActivity() {
                 actionState: Int,
                 isCurrentlyActive: Boolean
             ) {
-                // Limit the maximum swipe distance to half of the item width
-                val maxSwipeDistance = viewHolder.itemView.width / 2 .toFloat()
+                // Maksimum kaydırma mesafesini item genişliğinin yarısı olarak sınırla
+                val maxSwipeDistance = viewHolder.itemView.width / 2.toFloat()
                 val limitedDX = if (dX < -maxSwipeDistance) -maxSwipeDistance else dX
 
                 RecyclerViewSwipeDecorator.Builder(
@@ -182,7 +185,7 @@ class IngredientsActivity : AppCompatActivity() {
                     .addBackgroundColor(
                         ContextCompat.getColor(
                             this@IngredientsActivity,
-                            com.example.recipe.R.color.my_background
+                            R.color.my_background
                         )
                     )
                     .addSwipeLeftCornerRadius(
@@ -193,7 +196,7 @@ class IngredientsActivity : AppCompatActivity() {
                         TypedValue.COMPLEX_UNIT_DIP,
                         resources.getDimension(R.dimen.corner_radius)
                     )
-                    .addActionIcon(com.example.recipe.R.drawable.baseline_delete)
+                    .addActionIcon(R.drawable.baseline_delete)
                     .create()
                     .decorate()
 
@@ -203,5 +206,4 @@ class IngredientsActivity : AppCompatActivity() {
 
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
-
 }
