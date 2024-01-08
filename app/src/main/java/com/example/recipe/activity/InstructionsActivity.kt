@@ -251,8 +251,7 @@ class InstructionsActivity : AppCompatActivity() {
                 if (videoIntent.resolveActivity(packageManager) != null) {
                     startActivity(videoIntent)
                 } else {
-                    videoIntent.setPackage(null)
-                    startActivity(videoIntent)
+                    //Eğer link null sa yapılacak işlem
                 }
             } else {
                 Toast.makeText(this, "Please enter a valid video link", Toast.LENGTH_SHORT).show()
