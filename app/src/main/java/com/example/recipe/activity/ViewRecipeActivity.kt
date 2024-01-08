@@ -1,10 +1,15 @@
+// ViewRecipeActivity.kt
+
 package com.example.recipe.activity
 
 import DatabaseHelper
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,9 +26,9 @@ class ViewRecipeActivity : AppCompatActivity() {
     private lateinit var recipeList: MutableList<Recipe>
     private lateinit var recipeTitle: TextView
     private lateinit var categoryName: String
-    private lateinit var btnAddRecipe: Button
-
-
+    private lateinit var searchEditText: EditText
+    private lateinit var originalRecipeList: MutableList<Recipe>
+    private lateinit var btnHome: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,57 +40,81 @@ class ViewRecipeActivity : AppCompatActivity() {
         categoryName = intent.getStringExtra("selectedCategoryName").toString()
         recipeRecyclerView = findViewById(R.id.recipeRecyclerView)
         recipeList = mutableListOf()
+        originalRecipeList = mutableListOf()
         recipeTitle = findViewById(R.id.recipeTitle)
-        btnAddRecipe = findViewById(R.id.btnAddRecipe)
+        searchEditText = findViewById(R.id.searchEditText)
+        btnHome = findViewById(R.id.btnHome)
 
         val databaseHelper = DatabaseHelper(this)
 
-
-
+        setupSearchListener()
 
         setupRecyclerView(recipeRecyclerView)
-
-        btnAddRecipe.setOnClickListener {
-            val intent = Intent(this, NewRecipeActivity::class.java)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        loadRecipes()
+        btnHome.setOnClickListener {
+            transitionToHome()
         }
-
     }
 
-    fun setupRecyclerView(recyclerView: RecyclerView) {
+    private fun transitionToHome() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition( R.anim.slide_out_right, R.anim.slide_in_left,)
+        finish() // Bu aktiviteyi kapat
+    }
+    private fun setupSearchListener() {
+        searchEditText.addTextChangedListener(createTextWatcher())
+    }
+
+    private fun createTextWatcher(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                filterRecipes(charSequence.toString())
+            }
+
+            override fun afterTextChanged(editable: Editable?) {}
+        }
+    }
+
+    private fun setupRecyclerView(recyclerView: RecyclerView) {
         recipeTitle.text = "$categoryName recipes"
         recipeAdapter = RecipeAdapter(recipeList, this)
-        recipeRecyclerView.adapter = recipeAdapter
-        val spanCount = 2 // Sütun sayısını istediğiniz değere göre ayarlayın
+        recyclerView.adapter = recipeAdapter
+        val spanCount = 2
 
-        // GridLayoutManager oluşturulması
         val layoutManager = GridLayoutManager(this, spanCount)
         layoutManager.orientation = GridLayoutManager.VERTICAL
         recyclerView.layoutManager = layoutManager
 
-        // GridSpacingItemDecoration oluşturulması
         val spacing = resources.getDimensionPixelSize(R.dimen.grid_spacing)
-        val includeEdge = true // Kenarları da dahil etmek isterseniz true, sadece iç boşluk isterseniz false olarak ayarlayabilirsiniz
+        val includeEdge = true
         val itemDecoration = GridSpacingItemDecoration(spanCount, spacing, includeEdge)
 
-        // RecyclerView'a GridSpacingItemDecoration eklenmesi
         recyclerView.addItemDecoration(itemDecoration)
-        loadRecipes()
     }
 
     private fun loadRecipes() {
-        // Veritabanından daha önceden elimizde olan selectedCategoryName e sahip recipeleri al
         val databaseHelper = DatabaseHelper(this)
-
-
-        println(categoryName)
         val recipes = databaseHelper.getSpecificRecipes(categoryName)
 
-        // Kategorileri categoryList listesine ekle
-        recipeList.addAll(recipes)
+        recipeList.clear()
+        originalRecipeList.clear()
 
-        // Adapter'i güncelle
+        recipeList.addAll(recipes)
+        originalRecipeList.addAll(recipes)
+
+        recipeAdapter.notifyDataSetChanged()
+    }
+
+    private fun filterRecipes(query: String) {
+        val filteredList = originalRecipeList.filter { recipe ->
+            recipe.title.contains(query, ignoreCase = true)
+        }
+
+        recipeList.clear()
+        recipeList.addAll(filteredList)
         recipeAdapter.notifyDataSetChanged()
     }
 }

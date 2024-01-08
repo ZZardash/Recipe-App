@@ -2,13 +2,28 @@ package com.example.recipe.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatActivity
 
 class SharedPreferencesHelper(private val context: Context) {
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
 
+    fun saveStringData(key: String, value: String) {
+        val editor = sharedPreferences.edit()
+        editor.putString(key, value)
+        editor.apply()
+    }
 
+    // Functions for Int values
+    fun saveIntData(key: String, value: Int) {
+        val editor = sharedPreferences.edit()
+        editor.putInt(key, value)
+        editor.apply()
+    }
+    fun loadIntData(key: String, defaultValue: Int = 0): Int {
+        return sharedPreferences.getInt(key, defaultValue)
+    }
     fun getSharedPreferences(): SharedPreferences {
         return sharedPreferences
     }
@@ -26,6 +41,19 @@ class SharedPreferencesHelper(private val context: Context) {
 
     fun updateData(titleData: String, stringData: String) {
         saveData(titleData, stringData)
+    }
+
+    fun deleteData(titleData: String) {
+        val editor = sharedPreferences.edit()
+
+        // Retrieve the key associated with the titleData
+        val keyToRemove = sharedPreferences.all.keys.find { it == titleData }
+
+        // Remove the key-value pair if found
+        keyToRemove?.let {
+            editor.remove(it)
+            editor.apply()
+        }
     }
 
 }

@@ -11,7 +11,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.provider.MediaStore
 import android.widget.Button
 import android.widget.EditText
@@ -24,6 +23,8 @@ import com.example.recipe.util.SharedPreferencesHelper
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import android.widget.RatingBar
+import android.widget.Toast
 
 class NewRecipeActivity : AppCompatActivity() {
 
@@ -31,6 +32,8 @@ class NewRecipeActivity : AppCompatActivity() {
     private lateinit var addRecipePhoto: ImageView
     private lateinit var btnNewCategory: Button
     private lateinit var recipeName: EditText
+    private lateinit var btnCancelRecipe: Button
+    private lateinit var ratingBar: RatingBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,33 +48,77 @@ class NewRecipeActivity : AppCompatActivity() {
         sharedPreferences = SharedPreferencesHelper(this)
         addRecipePhoto = findViewById(R.id.addRecipePhoto)
         btnNewCategory = findViewById(R.id.btnNewCategory)
+        btnCancelRecipe = findViewById(R.id.btnCancelRecipe)
+        ratingBar = findViewById(R.id.ratingBar)
+        btnCancelRecipe.setOnClickListener {
+            showCancelConfirmationDialog()
+        }
 
         newCategoryButtonClick(btnNewCategory)
         addRecipePhotoClick()
+        setupRatingBar()
+    }
+
+    private fun setupRatingBar() {
+        ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
+            // Save the rating to SharedPreferences
+            sharedPreferences.saveData("recipeRate", rating.toString())
+            println(rating)
+            // You can display a Toast or perform other actions as needed
+            Toast.makeText(this, "Rating: $rating", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showCancelConfirmationDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setMessage("Are you sure to cancel your recipe?")
+        alertDialogBuilder.setPositiveButton("Yes") { _, _ ->
+            // Kullanıcı "Yes" butonuna tıkladığında yapılacak işlemler
+            // Örneğin, Main Activity'e dönüş işlemi
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_left,)
+            finish() // Bu aktiviteyi kapat
+        }
+        alertDialogBuilder.setNegativeButton("No") { dialog, _ ->
+            // Kullanıcı "No" butonuna tıkladığında yapılacak işlemler
+            dialog.dismiss() // Dialogu kapat
+        }
+        val alertDialog = alertDialogBuilder.create()
+
+        // Ekranın ortasına kayma animasyonu eklemek için aşağıdaki satırı kullanabilirsiniz
+        alertDialog.window?.attributes?.windowAnimations = 0
+        alertDialog.show()
     }
 
     private fun newCategoryButtonClick(btnNewCategory: Button) {
         btnNewCategory.setOnClickListener {
             //Saving recipe name to RecipeData class
             recipeName = findViewById(R.id.etRecipeName)
-            
+
             //Taking Recipe name, photo and saving it to the sharedPreferences
             val enteredRecipeName = recipeName.text.toString()
-            val photo = addRecipePhoto.drawable
-            val selectedPhoto: Bitmap = (photo as BitmapDrawable).bitmap
-            val file = saveBitmapToFile(selectedPhoto, "$enteredRecipeName.png", this)
 
-            if (file != null){
-                sharedPreferences.saveData("RecipePhotoPath", file.absolutePath)
+            if (enteredRecipeName.isEmpty()) {
+                // Show a toast message indicating that the recipe name cannot be empty
+                Toast.makeText(this, "Recipe name cannot be empty", Toast.LENGTH_SHORT).show()
+            } else {
+                val photo = addRecipePhoto.drawable
+                val selectedPhoto: Bitmap = (photo as BitmapDrawable).bitmap
+                val file = saveBitmapToFile(selectedPhoto, "$enteredRecipeName.png", this)
+
+                if (file != null) {
+                    sharedPreferences.saveData("RecipePhotoPath", file.absolutePath)
+                }
+                sharedPreferences.saveData("RecipeName", enteredRecipeName)
+                //Transition
+                val intent = Intent(this, NewCategoryActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
-            sharedPreferences.saveData("RecipeName", enteredRecipeName)
-            //Transition
-            val intent = Intent(this, NewCategoryActivity::class.java)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-
         }
     }
+
 
     private fun saveBitmapToFile(bitmap: Bitmap, fileName: String, context: Context): File? {
         val directory = File(context.filesDir, "category_images")
@@ -90,6 +137,7 @@ class NewRecipeActivity : AppCompatActivity() {
             null
         }
     }
+
     private fun addRecipePhotoClick() {
         addRecipePhoto.setOnClickListener {
             // Fotoğraf seçme işlemlerini burada gerçekleştirin
@@ -133,36 +181,31 @@ class NewRecipeActivity : AppCompatActivity() {
     }
 
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && data != null) {
-            when (requestCode) {
-                2 -> {
-                    // Galeriden seçilen fotoğrafın URI'si
-                    val imageUri = data.data
-                    if (imageUri != null) {
-                        val inputStream = contentResolver.openInputStream(imageUri!!)
-                        val bitmap = BitmapFactory.decodeStream(inputStream)
-                        val drawable = BitmapDrawable(resources, bitmap)
-                        // Seçilen fotoğrafı kullanarak istediğiniz işlemleri yapabilirsiniz
-                        addRecipePhoto.setImageDrawable(drawable)
+            super.onActivityResult(requestCode, resultCode, data)
+            if (resultCode == RESULT_OK) {
+                when (requestCode) {
+                    2 -> { // Gallery
+                        val imageUri = data?.data
+                        if (imageUri != null) {
+                            val inputStream = contentResolver.openInputStream(imageUri)
+                            val bitmap = BitmapFactory.decodeStream(inputStream)
+                            val drawable = BitmapDrawable(resources, bitmap)
+                            addRecipePhoto.setImageDrawable(drawable)
+                        }
                     }
-                }
 
-                3 -> {
-                    // Kameradan çekilen fotoğrafın URI'si
-                    val imageUri = data.data
-                    if (imageUri != null) {
-                        val inputStream = contentResolver.openInputStream(imageUri!!)
-                        val bitmap = BitmapFactory.decodeStream(inputStream)
-                        val drawable = BitmapDrawable(resources, bitmap)
-                        // Seçilen fotoğrafı kullanarak istediğiniz işlemleri yapabilirsiniz
-                        addRecipePhoto.setImageDrawable(drawable)
-                        // Çekilen fotoğrafı kullanarak istediğiniz işlemleri yapabilirsiniz
+                    3 -> { // Camera
+                        // Check if the data parameter is null
+                        if (data != null && data.extras != null) {
+                            // Extract the bitmap from the camera intent's extras
+                            val bitmap = data.extras?.get("data") as Bitmap
+                            val drawable = BitmapDrawable(resources, bitmap)
+                            addRecipePhoto.setImageDrawable(drawable)
+                        }
                     }
                 }
             }
         }
     }
-}
+

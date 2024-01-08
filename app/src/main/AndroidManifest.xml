@@ -17,67 +17,73 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Recipe"
-        tools:targetApi="31">
-
+        tools:targetApi="34">
 
         <activity
             android:name=".activity.SplashActivity"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@android:style/Theme.Translucent" />
+            android:theme="@style/Theme.AppCompat"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Recipe">
+        </activity>
 
         <activity
             android:name=".activity.RecipePageActivity"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.AppCompat"
             />
 
         <activity
             android:name=".activity.ViewRecipeActivity"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.AppCompat"
             />
         <activity
             android:name=".activity.ViewCategoriesActivity"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.AppCompat"
             />
         <activity
             android:name=".activity.InstructionsActivity"
-            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.AppCompat"
-            />
+            android:windowSoftInputMode="adjustPan"
+        />
         <activity
             android:name=".activity.OvenActivity"
-            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.AppCompat"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity
             android:name=".util.AddNewCategory"
             android:theme="@style/Theme.AppCompat"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity
             android:name=".activity.IngredientsActivity"
             android:theme="@style/Theme.AppCompat"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity
             android:name=".activity.NewCategoryActivity"
             android:theme="@style/Theme.AppCompat"
+            android:windowSoftInputMode="adjustPan"
             />
         <activity
             android:name=".activity.NewRecipeActivity"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.AppCompat"
         />
-        <activity
-            android:name=".activity.MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Recipe">
 
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

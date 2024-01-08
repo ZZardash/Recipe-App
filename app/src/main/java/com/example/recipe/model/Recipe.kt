@@ -11,6 +11,8 @@ data class Recipe(
     val temperature: String,
     val time: String,
     val image: Bitmap?,
+    val rating: String,
+    val videoLink: String,
 )
 
 

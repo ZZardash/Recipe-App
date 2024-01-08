@@ -1,54 +1,49 @@
-//First Page (Main Menu)
 package com.example.recipe.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.widget.ImageView
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
+import androidx.activity.OnBackPressedCallback
 import com.example.recipe.R
 import com.example.recipe.ui.theme.RecipeTheme
+import com.example.recipe.util.SharedPreferencesHelper
 
 class MainActivity : ComponentActivity() {
-    // lateinit => will be initialize after
-    private lateinit var btnAddRecipe: Button
-    private lateinit var btnViewRecipe: Button
+    private lateinit var sharedPreferences: SharedPreferencesHelper
+    private lateinit var imgAddRecipe: ImageView
+    private lateinit var imgViewRecipe: ImageView
+    private lateinit var imgSettingsRecipe: ImageView
 
-    // savedInstanceState:Bundle? => used for recreate activity or restore the state
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Setting the content to activity layout
         setContentView(R.layout.activity_main)
+        sharedPreferences = SharedPreferencesHelper(this)
 
-        //Finding the spesific elemnt by its id
-        btnAddRecipe = findViewById(R.id.btnAddRecipe)
-        btnViewRecipe = findViewById(R.id.btnViewRecipe)
+        imgAddRecipe = findViewById(R.id.imgAddRecipe)
+        imgViewRecipe = findViewById(R.id.imgViewRecipe)
 
         addRecipeIntent()
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Handle back press if needed
+            }
+        })
     }
 
-
-    private fun addRecipeIntent(){
-        btnAddRecipe.setOnClickListener {
-            // Setting the intent that goes to another activity
+    private fun addRecipeIntent() {
+        imgAddRecipe.setOnClickListener {
+            sharedPreferences.deleteData("videoLink")
             val intent = Intent(this, NewRecipeActivity::class.java)
             startActivity(intent)
-            // Animation transition
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
-        btnViewRecipe.setOnClickListener {
+
+        imgViewRecipe.setOnClickListener {
             val intent = Intent(this, ViewCategoriesActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
-
     }
-
 }
-
-

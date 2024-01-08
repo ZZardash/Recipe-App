@@ -1,8 +1,10 @@
+<!-- ingredient_row.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ingredients"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
+
     <EditText
         android:id="@+id/ingredientEditText"
         android:layout_width="0dp"
@@ -12,11 +14,11 @@
         android:fontFamily="@font/montserrat_bold"
         android:background="@android:drawable/editbox_background" />
 
-    <Button
-        android:id="@+id/removeIngredientButton"
+    <!-- Add a TextView with the id "textView" -->
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="-"
-        android:textSize="24sp" />
+        android:visibility="gone"/> <!-- Initially set to gone, since it seems like you want to use EditText -->
 
 </LinearLayout>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraintInstructions"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/instructions">
@@ -8,7 +10,7 @@
     <!-- Title TextView -->
     <TextView
         android:id="@+id/titleTextView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:gravity="center"
@@ -16,31 +18,68 @@
         android:textColor="#FFFF"
         android:textSize="24sp"
         android:fontFamily="@font/montserrat_bold"
-        android:layout_alignParentTop="true" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- EditText -->
-
-    <!-- Button -->
-    <EditText
-        android:id="@+id/instructionsEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/titleTextView"
-        android:layout_marginLeft="55dp"
+    <!-- Button to cancel recipe -->
+    <Button
+        android:id="@+id/btnCancelRecipe"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/exit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titleTextView"
         android:layout_marginTop="16dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginBottom="16dp"
-        android:background="@null"
-        android:fontFamily="@font/montserrat_bold"
-        android:gravity="top|start"
-        android:hint="Stage 1:"
-        android:inputType="textMultiLine"
-        android:minLines="3"
-        android:scrollbars="vertical"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFB"
-        android:textSize="16sp" />
+        android:layout_marginEnd="16dp"/>
 
+    <!-- EditText with ScrollView -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="375dp"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="-50dp"
+        android:layout_marginRight="65dp"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintTop_toBottomOf="@id/btnCancelRecipe"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnAddVideo">
+
+        <EditText
+            android:id="@+id/instructionsEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="top|start"
+            android:hint="Stage 1:"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:scrollbars="vertical"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#80FFFFFB"
+            android:textSize="16sp"/>
+    </ScrollView>
+
+    <!-- Button to add video -->
+    <Button
+        android:id="@+id/btnAddVideo"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="ADD VIDEO"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/plus_button"
+        android:backgroundTint="#FFFFFF"
+        android:textColor="@color/black"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="200dp"
+        android:fontFamily="@font/montserrat_bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- Button to go to oven -->
     <Button
         android:id="@+id/btnToOven"
         android:layout_width="50dp"
@@ -48,13 +87,8 @@
         android:background="@drawable/arrow"
         android:backgroundTint="#FFFFFF"
         android:src="@drawable/arrow"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="40dp"
         android:layout_marginEnd="40dp" />
-        />
-
-
-
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

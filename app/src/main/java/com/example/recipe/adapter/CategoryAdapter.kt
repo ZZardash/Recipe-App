@@ -35,7 +35,6 @@ class CategoryAdapter(private val itemList: MutableList<Category>, private val c
             }
         }
 
-
         private fun onLongClick(view: View): Boolean {
             val cardView = view as CardView
             val deleteIcon = cardView.findViewById<ImageView>(R.id.deleteIcon)
@@ -83,7 +82,10 @@ class CategoryAdapter(private val itemList: MutableList<Category>, private val c
             btnCardView.setOnClickListener(CategoryItemClickListener(itemView.context as Activity))
         }
     }
-
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_view, parent, false)
+        return ViewHolder(view)
+    }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = itemList[position]
         holder.bind(item)
@@ -103,10 +105,7 @@ class CategoryAdapter(private val itemList: MutableList<Category>, private val c
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_view, parent, false)
-        return ViewHolder(view)
-    }
+
 
 
 

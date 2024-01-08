@@ -15,7 +15,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "recipe.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
 
         // Table names
         private const val TABLE_CATEGORIES = "categories"
@@ -37,6 +37,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_TEMPERATURE = "temperature"
         private const val COLUMN_SELECTED_TIME = "selectedTime"
         private const val COLUMN_RECIPE_PHOTO_PATH = "recipePhotoPath"
+        private const val COLUMN_RECIPE_RATE = "recipeRate"
+        private const val COLUMN_VIDEO_LINK = "videoLink"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -58,7 +60,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 "$COLUMN_INSTRUCTIONS TEXT," +
                 "$COLUMN_TEMPERATURE TEXT," +
                 "$COLUMN_SELECTED_TIME TEXT," +
-                "$COLUMN_RECIPE_PHOTO_PATH TEXT" +
+                "$COLUMN_RECIPE_PHOTO_PATH TEXT," +
+                "$COLUMN_RECIPE_RATE TEXT," +
+                "$COLUMN_VIDEO_LINK TEXT" +
                 ")"
         db.execSQL(createRecipesTableQuery)
     }
@@ -114,7 +118,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         instructions: String,
         temperature: String,
         selectedTime: String,
-        recipePhotoPath: String
+        recipePhotoPath: String,
+        recipeRate: String,
+        videoLink: String,
     ): Long {
         val values = ContentValues().apply {
             put(COLUMN_RECIPE_NAME, recipeName)
@@ -124,6 +130,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_TEMPERATURE, temperature)
             put(COLUMN_SELECTED_TIME, selectedTime)
             put(COLUMN_RECIPE_PHOTO_PATH, recipePhotoPath)
+            put(COLUMN_RECIPE_RATE, recipeRate)
+            put(COLUMN_VIDEO_LINK, videoLink)
         }
 
         val db = writableDatabase
@@ -204,6 +212,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val recipePhotoPath = cursor.getColumnIndex(COLUMN_RECIPE_PHOTO_PATH)
         val recipeTemperature = cursor.getColumnIndex(COLUMN_TEMPERATURE)
         val recipeTime = cursor.getColumnIndex(COLUMN_SELECTED_TIME)
+        val recipeRate = cursor.getColumnIndex(COLUMN_RECIPE_RATE)
+        val videoLink = cursor.getColumnIndex(COLUMN_VIDEO_LINK)
 
         while (cursor.moveToNext()) {
             val id = cursor.getLong(recipeIndexId)
@@ -215,8 +225,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val time = cursor.getString(recipeTime)
             val image = cursor.getString(recipePhotoPath)
             val bitmapImage = decodeBitmapFromFile(image)
+            val recipeRate = cursor.getString(recipeRate)
+            val videoLink = cursor.getString(videoLink)
 
-            val recipe = Recipe(id, title, categoryName, ingredients, instructions, temperature, time, bitmapImage)
+            val recipe = Recipe(id, title, categoryName, ingredients, instructions, temperature, time, bitmapImage, recipeRate,videoLink)
             recipeList.add(recipe)
         }
 

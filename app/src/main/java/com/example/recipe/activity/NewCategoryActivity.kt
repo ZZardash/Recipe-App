@@ -25,6 +25,7 @@
     import android.view.View
     import android.widget.ImageView
     import android.widget.TextView
+    import android.widget.Toast
     import androidx.cardview.widget.CardView
     import androidx.recyclerview.widget.GridLayoutManager
     import androidx.recyclerview.widget.RecyclerView
@@ -39,7 +40,6 @@
 
     class NewCategoryActivity: AppCompatActivity() {
 
-
         private lateinit var categoryBox: View
         private lateinit var cardViewButton: CardView
         private lateinit var etRecipeName: EditText
@@ -51,9 +51,8 @@
         private lateinit var btnAddCategory: Button
         private lateinit var categoryList: MutableList<Category>
         private lateinit var etCategoryDescription: TextView
-
         private lateinit var sharedPreferences: SharedPreferencesHelper
-
+        private lateinit var btnCancelRecipe: Button
 
         @SuppressLint("MissingInflatedId")
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,16 +65,41 @@
             sharedPreferences = SharedPreferencesHelper(this)
 
 
-            //cardViewButton = findViewById<CardView>(R.id.btnCategoryCard)
-            //etRecipeName = findViewById<EditText>(R.id.etRecipeName)
             btnAddCategory = findViewById<Button>(R.id.btnAddCategory)
             categoryRecyclerView = findViewById(R.id.categoryRecyclerView)
             categoryList = mutableListOf<Category>()
-
+            btnCancelRecipe = findViewById(R.id.btnCancelRecipe)
+            btnCancelRecipe.setOnClickListener{
+                showCancelConfirmationDialog()
+            }
 
             setupRecyclerView(categoryRecyclerView)
             addCategoryClick()
 
+        }
+
+        private fun showCancelConfirmationDialog() {
+            val alertDialogBuilder = AlertDialog.Builder(this)
+            alertDialogBuilder.setMessage("Are you sure to cancel your recipe?")
+            alertDialogBuilder.setPositiveButton("Yes") { _, _ ->
+                // Kullanıcı "Yes" butonuna tıkladığında yapılacak işlemler
+                // Örneğin, Main Activity'e dönüş işlemi
+                sharedPreferences.deleteData("videoLink")
+
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition( R.anim.slide_out_right, R.anim.slide_in_left,)
+                finish() // Bu aktiviteyi kapat
+            }
+            alertDialogBuilder.setNegativeButton("No") { dialog, _ ->
+                // Kullanıcı "No" butonuna tıkladığında yapılacak işlemler
+                dialog.dismiss() // Dialogu kapat
+            }
+            val alertDialog = alertDialogBuilder.create()
+
+            // Ekranın ortasına kayma animasyonu eklemek için aşağıdaki satırı kullanabilirsiniz
+            alertDialog.window?.attributes?.windowAnimations = 0
+            alertDialog.show()
         }
 
         fun setupRecyclerView(recyclerView: RecyclerView) {
@@ -118,32 +142,26 @@
         }
 
         private fun addCategoryClick() {
-
             btnAddCategory.setOnClickListener {
-
                 applyBlurAnimation()
 
                 val (dialogBuilder, dialogView) = builderViewPair()
-
                 initializeDialogViewElements(dialogView)
-
                 dialogViewCategoryPhotoClick()
-
                 dialogBuilderButtonSetting(dialogBuilder)
-
 
                 val dialog = dialogBuilder.create()
                 val window = dialog.window
 
-
-                window?.setBackgroundDrawableResource(android.R.color.transparent) // Arka planı transparan yapma
-                window?.setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT) // Boyutları düzenleme
-                window?.setGravity(Gravity.CENTER) // Ortada görüntülenmesi için
-                window?.attributes?.windowAnimations = R.style.DialogAnimation // Animasyon eklemek için
+                window?.setBackgroundDrawableResource(android.R.color.transparent)
+                window?.setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                window?.setGravity(Gravity.CENTER)
+                window?.attributes?.windowAnimations = R.style.DialogAnimation
 
                 dialog.show()
             }
         }
+
         private fun saveBitmapToFile(bitmap: Bitmap, fileName: String, context: Context): File? {
             val file = File(context.filesDir, fileName)
             return try {
@@ -158,35 +176,40 @@
             }
         }
         private fun dialogBuilderButtonSetting(dialogBuilder: AlertDialog.Builder) {
-            dialogBuilder.setPositiveButton("Devam Et") { dialog, which ->
-                val databaseHelper = DatabaseHelper(this)
+            val dialog = dialogBuilder.create()
 
+            dialogBuilder.setPositiveButton("Devam Et") { _, _ ->
                 val categoryName = categoryNameTextView.text.toString()
                 val categoryDescription = etCategoryDescription.text.toString()
-                val selectedPhoto = dialogViewCategoryPhoto.drawable
-                val bitmap: Bitmap = (selectedPhoto as BitmapDrawable).bitmap
 
-                val file = saveBitmapToFile(bitmap, "$categoryName.png", this) // saveBitmapToFile fonksiyonunu çağır
+                if (categoryName.isEmpty()) {
+                    // Show a toast message indicating that the category name cannot be empty
+                    Toast.makeText(this, "Category name cannot be empty", Toast.LENGTH_SHORT).show()
+                } else {
+                    val databaseHelper = DatabaseHelper(this)
+                    val selectedPhoto = dialogViewCategoryPhoto.drawable
+                    val bitmap: Bitmap = (selectedPhoto as BitmapDrawable).bitmap
 
+                    val file = saveBitmapToFile(bitmap, "$categoryName.png", this)
 
-                if (file != null) {
-                    val categoryId = databaseHelper.insertCategory(categoryName, categoryDescription, file.absolutePath)
-                    val category = Category(categoryId, categoryName, categoryDescription, bitmap)
-                    categoryList.add(category)
-                    categoryAdapter.notifyDataSetChanged()
+                    if (file != null) {
+                        val categoryId = databaseHelper.insertCategory(categoryName, categoryDescription, file.absolutePath)
+                        val category = Category(categoryId, categoryName, categoryDescription, bitmap)
+                        categoryList.add(category)
+                        categoryAdapter.notifyDataSetChanged()
+                    }
+
+                    // Close the dialog only if the category name is not empty
+                    dialog.dismiss()
                 }
-
-                //Adding name desc, uri to the db
-                //val categoryBox = createCategoryBox(selectedPhoto, categoryName)
-                // Kullanıcının girdiği değerleri kullanarak ilgili işlemleri gerçekleştirebilirsiniz
-                //val categoryContainer = findViewById<LinearLayout>(R.id.categoryContainer)
-                //categoryContainer.addView(categoryBox)
             }
 
-            dialogBuilder.setNegativeButton("İptal") { dialog, which ->
+            dialogBuilder.setNegativeButton("İptal") { _, _ ->
                 // İptal butonuna tıklanıldığında yapılacak işlemleri burada tanımlayabilirsiniz
+                dialog.dismiss()
             }
         }
+
 
         private fun dialogViewCategoryPhotoClick() {
             dialogViewCategoryPhoto.setOnClickListener {
