@@ -163,7 +163,6 @@ class RecipePageActivity : AppCompatActivity() {
             contentLayout.removeView(ingredientsTextView)
         }
 
-        // Hazırlık düzenini göster veya "Hazırlık" düğmesi için istenen herhangi bir işlemi gerçekleştir
         // Talimatları metin içeriği olarak ayarla
         val customTypeface = ResourcesCompat.getFont(this, R.font.montserrat_bold)
 
@@ -187,7 +186,6 @@ class RecipePageActivity : AppCompatActivity() {
         buttonsLayout.gravity = Gravity.CENTER
 
         val videoLinksArray = videoLinks.split("\n")
-        println(videoLinks)
         for (link in videoLinksArray) {
             // Bağlantı "youtube", "instagram" veya "tiktok" içeriyorsa kontrol et
             when {
@@ -203,11 +201,11 @@ class RecipePageActivity : AppCompatActivity() {
 
                 link.contains("tiktok", true) -> {
                     // TikTok düğmesi oluştur
-                    addButtonWithDrawable(link, R.drawable.tiktok,  buttonsLayout)
+                    addButtonWithDrawable(link, R.drawable.tiktok, buttonsLayout)
                 }
                 else -> {
                     // Gerekirse diğer platformları ele al
-                    addButtonWithDrawable(link, R.drawable.default_video,  buttonsLayout)
+                    addButtonWithDrawable(link, R.drawable.default_video, buttonsLayout)
                 }
             }
         }
@@ -219,6 +217,13 @@ class RecipePageActivity : AppCompatActivity() {
     private fun addButtonWithDrawable(link: String, drawableResId: Int, parentLayout: LinearLayout) {
         val button = Button(this)
         button.setBackgroundResource(drawableResId)
+
+        /*
+        button.setOnLongClickListener {
+            showDeleteConfirmationDialog(link)
+            true
+        }*/
+
         button.setOnClickListener {
             // Karşılık gelen bağlantıyı açmak için mantık uygula
             openVideoLink(link)

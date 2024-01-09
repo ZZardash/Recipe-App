@@ -20,6 +20,7 @@ import com.example.recipe.R
 import com.example.recipe.model.Recipe
 import com.example.recipe.util.SharedPreferencesHelper
 import com.google.android.material.switchmaterial.SwitchMaterial
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -60,19 +61,23 @@ class OvenActivity : AppCompatActivity() {
         }
 
         startButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+            // Disable the button to prevent multiple clicks during animation
+            startButton.isEnabled = false
 
+            val intent = Intent(this, MainActivity::class.java)
             lottieAnimationView.playAnimation()
 
-            GlobalScope.launch {
+            GlobalScope.launch(Dispatchers.Main) {
                 delay(2500L)
                 saveAllData()
                 sharedPreferences.deleteData("videoLink")
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                // Gecikmeli kodunuz burada
+                // Re-enable the button after the animation is complete
+                startButton.isEnabled = true
             }
         }
+
     }
 
     // İptal işlemini onaylama dialogunu göster
@@ -124,11 +129,7 @@ class OvenActivity : AppCompatActivity() {
         val recipeRate = sharedPreferences.loadData("recipeRate")
         val videoLink = sharedPreferences.loadData("videoLink")
 
-        println(ingredients)
-
-        println("!!!" + videoLink + "!!!")
-
-        println(recipeName + "\n" + categoryName + "\n" + ingredients + "\n" + ins + "\n" + _temp + "\n" + _time + "\n" + recipePhotoPath + "\n" + recipeRate + "\n" + videoLink)
+        //println(recipeName + "\n" + categoryName + "\n" + ingredients + "\n" + ins + "\n" + _temp + "\n" + _time + "\n" + recipePhotoPath + "\n" + recipeRate + "\n" + videoLink)
 
         val recipeId = databaseHelper.insertRecipe(recipeName, categoryName, ingredients, ins, _temp, _time, recipePhotoPath, recipeRate, videoLink)
         val recipe = Recipe(recipeId, recipeName, categoryName, ingredients, ins, _temp, _time, bitmapPhoto, recipeRate, videoLink)

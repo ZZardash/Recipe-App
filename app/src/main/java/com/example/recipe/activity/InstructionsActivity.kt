@@ -152,7 +152,7 @@ class InstructionsActivity : AppCompatActivity() {
                 ConstraintLayout.LayoutParams.MATCH_PARENT,
                 ConstraintLayout.LayoutParams.WRAP_CONTENT
             )
-            linearLayout.orientation = LinearLayout.HORIZONTAL
+            linearLayout.orientation = LinearLayout.VERTICAL  // Change the orientation to vertical
             linearLayout.gravity = Gravity.CENTER
             val linearParams = ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_PARENT,
@@ -192,7 +192,7 @@ class InstructionsActivity : AppCompatActivity() {
         if (linearLayout.childCount > 1) {
             val params =
                 linearLayout.getChildAt(linearLayout.childCount - 1).layoutParams as ViewGroup.MarginLayoutParams
-            params.leftMargin = 16
+            params.topMargin = 16
         }
     }
 
