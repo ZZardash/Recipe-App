@@ -81,7 +81,7 @@ class InstructionsActivity : AppCompatActivity() {
                     showDuplicateLinkAlert()
                 } else {
                     saveVideoLink(videoLink)
-                    addVideoButton(videoName, videoLink)
+                    addVideoButton(videoName, videoLink, btnAddVideo)
                     alertDialog.dismiss()
                 }
             } else {
@@ -135,7 +135,10 @@ class InstructionsActivity : AppCompatActivity() {
     }
 
     // Eklenen video linkini gösteren buton ekleyen fonksiyon
-    private fun addVideoButton(videoName: String, videoLink: String) {
+    // Updated addVideoButton function
+    // Updated addVideoButton function
+    // Updated addVideoButton function
+    private fun addVideoButton(videoName: String, videoLink: String, addVideoButton: Button) {
         val layout: ConstraintLayout = findViewById(R.id.constraintInstructions)
         var linearLayout: LinearLayout? = null
 
@@ -152,7 +155,7 @@ class InstructionsActivity : AppCompatActivity() {
                 ConstraintLayout.LayoutParams.MATCH_PARENT,
                 ConstraintLayout.LayoutParams.WRAP_CONTENT
             )
-            linearLayout.orientation = LinearLayout.VERTICAL  // Change the orientation to vertical
+            linearLayout.orientation = LinearLayout.HORIZONTAL
             linearLayout.gravity = Gravity.CENTER
             val linearParams = ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_PARENT,
@@ -187,14 +190,17 @@ class InstructionsActivity : AppCompatActivity() {
             true
         }
 
-        linearLayout.addView(newButton)
+        // Add the newButton above the "Add Video" button
+        linearLayout.addView(newButton, 0) // Add to the beginning of the linearLayout
 
         if (linearLayout.childCount > 1) {
             val params =
                 linearLayout.getChildAt(linearLayout.childCount - 1).layoutParams as ViewGroup.MarginLayoutParams
-            params.topMargin = 16
+            params.leftMargin = 16
         }
     }
+
+
 
     // Video linkini silmek için onaylama dialogu gösteren fonksiyon
     private fun showDeleteConfirmationDialog(button: Button, videoLink: String) {

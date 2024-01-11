@@ -24,13 +24,13 @@ import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.R
 import com.example.recipe.adapter.IngredientAdapter
-
 class RecipePageActivity : AppCompatActivity() {
 
     private lateinit var ingredientsButton: Button
@@ -163,8 +163,15 @@ class RecipePageActivity : AppCompatActivity() {
             contentLayout.removeView(ingredientsTextView)
         }
 
-        // Talimatları metin içeriği olarak ayarla
-        val customTypeface = ResourcesCompat.getFont(this, R.font.montserrat_bold)
+        // Ana layout
+        val mainLayout = LinearLayout(this)
+        mainLayout.orientation = LinearLayout.VERTICAL
+        mainLayout.gravity = Gravity.CENTER
+
+        // Talimatları içeren layout
+        val instructionsLayout = LinearLayout(this)
+        instructionsLayout.orientation = LinearLayout.HORIZONTAL
+        instructionsLayout.gravity = Gravity.CENTER
 
         val preparationTextView = TextView(this)
         preparationTextView.text = instructions
@@ -172,15 +179,13 @@ class RecipePageActivity : AppCompatActivity() {
         preparationTextView.setBackgroundColor(Color.TRANSPARENT)
         preparationTextView.setTextSize(14f)
         preparationTextView.setPadding(8, 25, 8, 8)
-        preparationTextView.typeface = customTypeface
+        preparationTextView.typeface = ResourcesCompat.getFont(this, R.font.montserrat_bold)
         preparationTextView.movementMethod = ScrollingMovementMethod.getInstance()
         preparationTextView.isVerticalScrollBarEnabled = true
 
-        // İçerik düzenini preparationTextView ile güncelle
-        contentLayout.removeAllViews()
-        contentLayout.addView(preparationTextView)
+        instructionsLayout.addView(preparationTextView)
 
-        // Düğmeleri tutan bir LinearLayout oluştur
+        // Butonları içeren layout
         val buttonsLayout = LinearLayout(this)
         buttonsLayout.orientation = LinearLayout.HORIZONTAL
         buttonsLayout.gravity = Gravity.CENTER
@@ -210,9 +215,18 @@ class RecipePageActivity : AppCompatActivity() {
             }
         }
 
-        // buttonsLayout'ı contentLayout'a ekle
-        contentLayout.addView(buttonsLayout)
+        // Ana layout'a instructionsLayout ve buttonsLayout'u ekleyin
+        mainLayout.addView(instructionsLayout)
+        mainLayout.addView(buttonsLayout)
+
+        // İçerik düzenini güncelle
+        contentLayout.removeAllViews()
+        contentLayout.addView(mainLayout)
     }
+
+
+
+
 
     private fun addButtonWithDrawable(link: String, drawableResId: Int, parentLayout: LinearLayout) {
         val button = Button(this)
