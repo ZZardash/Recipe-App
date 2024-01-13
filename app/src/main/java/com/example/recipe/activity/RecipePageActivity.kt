@@ -21,8 +21,10 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
@@ -168,6 +170,9 @@ class RecipePageActivity : AppCompatActivity() {
         mainLayout.orientation = LinearLayout.VERTICAL
         mainLayout.gravity = Gravity.CENTER
 
+        // ScrollView ekleyin
+        val scrollView = ScrollView(this)
+
         // Talimatları içeren layout
         val instructionsLayout = LinearLayout(this)
         instructionsLayout.orientation = LinearLayout.HORIZONTAL
@@ -191,57 +196,100 @@ class RecipePageActivity : AppCompatActivity() {
         buttonsLayout.gravity = Gravity.CENTER
 
         val videoLinksArray = videoLinks.split("\n")
-        for (link in videoLinksArray) {
-            // Bağlantı "youtube", "instagram" veya "tiktok" içeriyorsa kontrol et
-            when {
-                link.contains("youtube", true) || link.contains("youtu.be", true) -> {
-                    // YouTube düğmesi oluştur
-                    addButtonWithDrawable(link, R.drawable.youtube, buttonsLayout)
-                }
+        if (videoLinksArray.isNotEmpty()) {
+            for (link in videoLinksArray) {
+                // Bağlantı "youtube", "instagram" veya "tiktok" içeriyorsa kontrol et
+                when {
+                    link.contains("youtube", true) || link.contains("youtu.be", true) -> {
+                        // YouTube düğmesi oluştur
+                        addButtonWithDrawable(link, R.drawable.youtube, buttonsLayout)
+                    }
 
-                link.contains("instagram", true) -> {
-                    // Instagram düğmesi oluştur
-                    addButtonWithDrawable(link, R.drawable.instagram, buttonsLayout)
-                }
+                    link.contains("instagram", true) -> {
+                        // Instagram düğmesi oluştur
+                        addButtonWithDrawable(link, R.drawable.instagram, buttonsLayout)
+                    }
 
-                link.contains("tiktok", true) -> {
-                    // TikTok düğmesi oluştur
-                    addButtonWithDrawable(link, R.drawable.tiktok, buttonsLayout)
-                }
-                else -> {
-                    // Gerekirse diğer platformları ele al
-                    addButtonWithDrawable(link, R.drawable.default_video, buttonsLayout)
+                    link.contains("tiktok", true) -> {
+                        // TikTok düğmesi oluştur
+                        addButtonWithDrawable(link, R.drawable.tiktok, buttonsLayout)
+                    }
+                    else -> {
+                        // Gerekirse diğer platformları ele al
+                        addButtonWithDrawable(link, R.drawable.default_video, buttonsLayout)
+                    }
                 }
             }
+        } else {
+            // Video link array boşsa burada bir işlem yapabilirsiniz.
+            // Örneğin, bir mesaj gösterebilir veya başka bir varsayılan işlemi gerçekleştirebilirsiniz.
+            // Şu anlık bir mesaj gösterelim:
+            Log.d("showPreparation", "Video link array boş.")
         }
+
 
         // Ana layout'a instructionsLayout ve buttonsLayout'u ekleyin
         mainLayout.addView(instructionsLayout)
         mainLayout.addView(buttonsLayout)
 
+        // ScrollView içine mainLayout'u ekleyin
+        scrollView.addView(mainLayout)
+
         // İçerik düzenini güncelle
         contentLayout.removeAllViews()
-        contentLayout.addView(mainLayout)
+        contentLayout.addView(scrollView)
+    }
+
+    private fun deleteVideoLinkFromDatabase(link: String) {
+        val databaseHelper = DatabaseHelper(this)
+        val recipeId = intent.getLongExtra("recipeId", 0)
+
+        // Retrieve the current videoLink value from the database
+        val currentVideoLinks = databaseHelper.getRecipeColumnData(recipeId, "videoLink").toString()
+
+        // Remove the specified link from the current value
+        val updatedVideoLinks = currentVideoLinks.replace(link, "").trim()
+
+        // Update the database with the modified videoLink value
+        databaseHelper.updateRecipeColumnData(recipeId, "videoLink", updatedVideoLinks)
     }
 
 
+    private fun showDeleteConfirmationDialog(link: String, button: Button, parentLayout: LinearLayout) {
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setTitle("Delete Confirmation")
+        alertDialogBuilder.setMessage("Are you sure you want to delete this video link?")
+        alertDialogBuilder.setPositiveButton("Yes") { _, _ ->
+            // Delete the video link from the database
+            deleteVideoLinkFromDatabase(link)
 
+            // Remove the button from the parent layout
+            parentLayout.removeView(button)
+        }
+        alertDialogBuilder.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val alertDialog = alertDialogBuilder.create()
+        alertDialog.show()
+    }
 
 
     private fun addButtonWithDrawable(link: String, drawableResId: Int, parentLayout: LinearLayout) {
+
         val button = Button(this)
         button.setBackgroundResource(drawableResId)
-
-        /*
-        button.setOnLongClickListener {
-            showDeleteConfirmationDialog(link)
-            true
-        }*/
 
         button.setOnClickListener {
             // Karşılık gelen bağlantıyı açmak için mantık uygula
             openVideoLink(link)
         }
+
+        button.setOnLongClickListener {
+            showDeleteConfirmationDialog(link, button, parentLayout)
+            true
+        }
+
         val params = LinearLayout.LayoutParams(
             250,
             250
@@ -249,7 +297,9 @@ class RecipePageActivity : AppCompatActivity() {
         params.setMargins(16, 0, 16, 0)
         button.layoutParams = params
 
-        parentLayout.addView(button)
+        if (link.isNotEmpty()){
+            parentLayout.addView(button)
+        }
     }
 
     private fun openVideoLink(videoLinks: String) {
@@ -259,7 +309,7 @@ class RecipePageActivity : AppCompatActivity() {
             val trimmedVideoLink = link.trim()
             Log.d("VideoLink", "Video Link: $trimmedVideoLink")
 
-            if (trimmedVideoLink.isNotEmpty()) {
+            if (isValidLink(trimmedVideoLink)) {
                 val videoIntent = Intent(Intent.ACTION_VIEW, Uri.parse(trimmedVideoLink))
 
                 when {
@@ -268,30 +318,33 @@ class RecipePageActivity : AppCompatActivity() {
                     }
                     trimmedVideoLink.contains("instagram", true) -> {
                         videoIntent.setPackage("com.instagram.android")
-
-                    }
-                    trimmedVideoLink.contains("tiktok", true) -> {
-                        videoIntent.setPackage("com.zhiliaoapp.musically")
                     }
                     trimmedVideoLink.contains("tiktok", true) -> {
                         videoIntent.setPackage("com.zhiliaoapp.musically")
                     }
                     else -> {
-                        // Gerekirse diğer platformları ele al
+                        // If the link doesn't contain any of the specified platforms, consider it invalid
+                        Toast.makeText(this, "This is not a valid link", Toast.LENGTH_SHORT).show()
+                        return  // Return here to prevent starting the activity for an invalid link
                     }
                 }
 
-                if (videoIntent.resolveActivity(packageManager) != null) {
-                    startActivity(videoIntent)
-                } else {
-                    videoIntent.setPackage(null)
-                    startActivity(videoIntent)
-                }
+                startActivity(videoIntent)
             } else {
-                Toast.makeText(this, "Lütfen geçerli bir video bağlantısı girin", Toast.LENGTH_SHORT).show()
+                // Link boşsa uyarı ver
+                Toast.makeText(this, "This is not a valid link", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
+
+    private fun isValidLink(link: String): Boolean {
+        // Implement your validation logic here
+        // For example, you can check if the link starts with "http" or "https" to consider it a valid link
+        return link.startsWith("http") || link.startsWith("https")
+    }
+
+
 
     private fun showCombinedDetailsIngredients(ingredients: Array<String>, temperature: String, selectedTime: String) {
         // Eğer varsa mevcut çocuk görünümünü contentLayout'tan kaldır

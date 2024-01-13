@@ -52,7 +52,11 @@ class InstructionsActivity : AppCompatActivity() {
         // Fırın sayfasına geçiş yapacak butona tıklanınca çalışacak fonksiyon atanıyor.
         goToOvenPage()
     }
-
+    private fun isValidLink(link: String): Boolean {
+        // Implement your validation logic here
+        // For example, you can check if the link starts with "http" or "https" to consider it a valid link
+        return link.startsWith("http") || link.startsWith("https")
+    }
     // Video eklemek için dialog gösteren fonksiyon
     private fun showAddVideoDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_video, null)
@@ -71,7 +75,7 @@ class InstructionsActivity : AppCompatActivity() {
             val videoName = editTextVideoName.text.toString()
             val videoLink = editTextVideoLink.text.toString()
 
-            if (videoLink.isNotEmpty()) {
+            if (isValidLink(videoLink)) {
                 // Video limitine ulaşılıp ulaşılmadığını kontrol et
                 if (isVideoLimitReached()) {
                     // Video limitine ulaşıldığını belirten bir uyarı göster
@@ -170,26 +174,25 @@ class InstructionsActivity : AppCompatActivity() {
         val newButton = Button(this)
         newButton.text = videoName
         newButton.layoutParams = ViewGroup.LayoutParams(250, 250)
-
         if (videoLink.contains("youtube", true) || (videoLink.contains("youtu.be", true))) {
             newButton.setBackgroundResource(R.drawable.youtube)
         } else if (videoLink.contains("instagram", true)) {
             newButton.setBackgroundResource(R.drawable.instagram)
         } else if (videoLink.contains("tiktok", true)) {
             newButton.setBackgroundResource(R.drawable.tiktok)
-        } else {
-            newButton.setBackgroundResource(R.drawable.default_video)
         }
 
+
         newButton.setOnClickListener {
-            openVideoLink(videoLink)
+            // Check if the link is valid before opening
+                openVideoLink(videoLink)
         }
 
         newButton.setOnLongClickListener {
+            // Check if the link is valid before showing the delete confirmation dialog
             showDeleteConfirmationDialog(newButton, videoLink)
             true
         }
-
         // Add the newButton above the "Add Video" button
         linearLayout.addView(newButton, 0) // Add to the beginning of the linearLayout
 
@@ -199,6 +202,8 @@ class InstructionsActivity : AppCompatActivity() {
             params.leftMargin = 16
         }
     }
+    // Add a function to check if the link is valid
+
 
 
 
@@ -250,15 +255,13 @@ class InstructionsActivity : AppCompatActivity() {
                         videoIntent.setPackage("com.zhiliaoapp.musically")
                     }
                     else -> {
-                        // Diğer platformları işle, gerekirse
+                        // If the link doesn't contain any of the specified platforms, consider it invalid
+                        Toast.makeText(this, "This is not a valid link", Toast.LENGTH_SHORT).show()
+                        return  // Return here to prevent starting the activity for an invalid link
                     }
                 }
 
-                if (videoIntent.resolveActivity(packageManager) != null) {
-                    startActivity(videoIntent)
-                } else {
-                    //Eğer link null sa yapılacak işlem
-                }
+                startActivity(videoIntent)
             } else {
                 Toast.makeText(this, "Please enter a valid video link", Toast.LENGTH_SHORT).show()
             }

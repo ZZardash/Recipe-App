@@ -97,7 +97,7 @@ class ViewRecipeActivity : AppCompatActivity() {
 
     // RecyclerView ve adaptörü ayarla
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recipeTitle.text = "$categoryName tarifleri"
+        recipeTitle.text = "$categoryName recipes"
         recipeAdapter = RecipeAdapter(recipeList, this)
         recyclerView.adapter = recipeAdapter
         val spanCount = 2

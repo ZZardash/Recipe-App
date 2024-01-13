@@ -162,10 +162,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 
-    fun bitmapToDrawable(bitmap: Bitmap, context: Context): Drawable {
-        return BitmapDrawable(context.resources, bitmap)
-    }
-
     // Get all categories from the "categories" table
     fun getAllCategories(): List<Category> {
         val categoryList = mutableListOf<Category>()
@@ -278,7 +274,38 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return columnData
     }
 
+    fun deleteRecipeColumnData(recipeId: Long, columnName: String): Boolean {
+        val db = writableDatabase
+        val whereClause = "$COLUMN_ID = ?"
+        val whereArgs = arrayOf(recipeId.toString())
 
+        return try {
+            // Sütunu boş bir dizeyle güncellemek için ContentValues kullanma
+            val contentValues = ContentValues()
+            contentValues.put(columnName, "") // Set the column value to an empty string
+            // Belirli sütunu güncelle
+            db.update(TABLE_RECIPES, contentValues, whereClause, whereArgs) > 0
+        } finally {
+            db.close()
+        }
+    }
+
+    fun updateRecipeColumnData(recipeId: Long, columnName: String, newValue: String): Boolean {
+        val db = writableDatabase
+        val whereClause = "$COLUMN_ID = ?"
+        val whereArgs = arrayOf(recipeId.toString())
+
+        return try {
+            // Use ContentValues to specify the new value for the column
+            val contentValues = ContentValues()
+            contentValues.put(columnName, newValue)
+
+            // Update the specified column with the new value
+            db.update(TABLE_RECIPES, contentValues, whereClause, whereArgs) > 0
+        } finally {
+            db.close()
+        }
+    }
     fun showTableColumns() {
         val columnNames = mutableListOf<String>()
         val selectQuery = "PRAGMA table_info(recipes)"
