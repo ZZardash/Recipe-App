@@ -35,10 +35,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_INGREDIENTS = "ingredients"
         private const val COLUMN_INSTRUCTIONS = "instructions"
         private const val COLUMN_TEMPERATURE = "temperature"
-        private const val COLUMN_SELECTED_TIME = "selectedTime"
         private const val COLUMN_RECIPE_PHOTO_PATH = "recipePhotoPath"
         private const val COLUMN_RECIPE_RATE = "recipeRate"
         private const val COLUMN_VIDEO_LINK = "videoLink"
+        private const val COLUMN_COOKING_TIME = "cookingTime"
+        private const val COLUMN_PREPARATION_TIME = "preparationTime"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -59,10 +60,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 "$COLUMN_INGREDIENTS TEXT," +
                 "$COLUMN_INSTRUCTIONS TEXT," +
                 "$COLUMN_TEMPERATURE TEXT," +
-                "$COLUMN_SELECTED_TIME TEXT," +
                 "$COLUMN_RECIPE_PHOTO_PATH TEXT," +
                 "$COLUMN_RECIPE_RATE TEXT," +
-                "$COLUMN_VIDEO_LINK TEXT" +
+                "$COLUMN_VIDEO_LINK TEXT," +
+                "$COLUMN_COOKING_TIME TEXT," +
+                "$COLUMN_PREPARATION_TIME TEXT" +
                 ")"
         db.execSQL(createRecipesTableQuery)
     }
@@ -117,10 +119,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         ingredients: String,
         instructions: String,
         temperature: String,
-        selectedTime: String,
         recipePhotoPath: String,
         recipeRate: String,
         videoLink: String,
+        cookingTime: String,
+        prepTime: String,
     ): Long {
         val values = ContentValues().apply {
             put(COLUMN_RECIPE_NAME, recipeName)
@@ -128,10 +131,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_INGREDIENTS, ingredients)
             put(COLUMN_INSTRUCTIONS, instructions)
             put(COLUMN_TEMPERATURE, temperature)
-            put(COLUMN_SELECTED_TIME, selectedTime)
             put(COLUMN_RECIPE_PHOTO_PATH, recipePhotoPath)
             put(COLUMN_RECIPE_RATE, recipeRate)
             put(COLUMN_VIDEO_LINK, videoLink)
+            put(COLUMN_COOKING_TIME, cookingTime)
+            put(COLUMN_PREPARATION_TIME, prepTime)
         }
 
         val db = writableDatabase
@@ -207,9 +211,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val recipeInstructions = cursor.getColumnIndex(COLUMN_INSTRUCTIONS)
         val recipePhotoPath = cursor.getColumnIndex(COLUMN_RECIPE_PHOTO_PATH)
         val recipeTemperature = cursor.getColumnIndex(COLUMN_TEMPERATURE)
-        val recipeTime = cursor.getColumnIndex(COLUMN_SELECTED_TIME)
         val recipeRate = cursor.getColumnIndex(COLUMN_RECIPE_RATE)
         val videoLink = cursor.getColumnIndex(COLUMN_VIDEO_LINK)
+        val cookingTime = cursor.getColumnIndex(COLUMN_COOKING_TIME)
+        val preparationTime = cursor.getColumnIndex(COLUMN_PREPARATION_TIME)
 
         while (cursor.moveToNext()) {
             val id = cursor.getLong(recipeIndexId)
@@ -218,13 +223,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val ingredients = cursor.getString(recipeIngredients)
             val instructions = cursor.getString(recipeInstructions)
             val temperature = cursor.getString(recipeTemperature)
-            val time = cursor.getString(recipeTime)
+
             val image = cursor.getString(recipePhotoPath)
             val bitmapImage = decodeBitmapFromFile(image)
             val recipeRate = cursor.getString(recipeRate)
             val videoLink = cursor.getString(videoLink)
+            val cookingTime = cursor.getString(cookingTime)
+            val prepTime = cursor.getString(preparationTime)
 
-            val recipe = Recipe(id, title, categoryName, ingredients, instructions, temperature, time, bitmapImage, recipeRate,videoLink)
+            val recipe = Recipe(id, title, categoryName, ingredients, instructions, temperature, bitmapImage, recipeRate,videoLink, cookingTime, prepTime)
             recipeList.add(recipe)
         }
 

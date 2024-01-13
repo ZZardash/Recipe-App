@@ -85,13 +85,32 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Set Cooking Time"
-                android:textSize="24sp"
-                android:gravity="center"
-                android:padding="16dp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Preparation Time"
+                    android:textSize="24sp"
+                    android:gravity="center"
+                    android:padding="16dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cooking Time"
+                    android:textSize="24sp"
+                    android:gravity="center"
+                    android:padding="16dp" />
+
+            </LinearLayout>
+
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -100,12 +119,18 @@
                 android:gravity="center">
 
                 <TimePicker
-                    android:id="@+id/timePicker"
+                    android:id="@+id/preparationTimePicker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
                     android:timePickerMode="spinner" />
 
+                <TimePicker
+                    android:id="@+id/cookingTimePicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:timePickerMode="spinner" />
             </LinearLayout>
 
         </LinearLayout>
@@ -115,12 +140,13 @@
     <!-- Başlatma Butonu -->
     <Button
         android:id="@+id/startButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:text="Save"
         android:background="@drawable/button_background"
         android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginBottom="10dp"
         android:textColor="@android:color/white" />
 

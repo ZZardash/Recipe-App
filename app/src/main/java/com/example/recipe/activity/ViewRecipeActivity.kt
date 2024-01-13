@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.R
 import com.example.recipe.adapter.RecipeAdapter
 import com.example.recipe.model.Recipe
+import com.example.recipe.util.BottomSheetSortFragment
 import com.example.recipe.util.GridSpacingItemDecoration
 
 class ViewRecipeActivity : AppCompatActivity() {
@@ -29,6 +30,7 @@ class ViewRecipeActivity : AppCompatActivity() {
     private lateinit var searchEditText: EditText
     private lateinit var originalRecipeList: MutableList<Recipe>
     private lateinit var btnHome: Button
+    private lateinit var btnSort: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +68,17 @@ class ViewRecipeActivity : AppCompatActivity() {
         btnHome.setOnClickListener {
             transitionToHome()
         }
+
+        btnSort = findViewById(R.id.btnSort)
+        btnSort.setOnClickListener {
+            showBottomSheetDialog()
+        }
+
+    }
+
+    private fun showBottomSheetDialog() {
+        val bottomSheetFragment = BottomSheetSortFragment()
+        bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
     }
 
     // Ana ekrana geçiş metodu

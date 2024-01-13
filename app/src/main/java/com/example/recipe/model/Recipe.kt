@@ -9,11 +9,14 @@ data class Recipe(
     val ingredients: String,
     val instructions: String,
     val temperature: String,
-    val time: String,
     val image: Bitmap?,
     val rating: String,
     val videoLink: String,
+    val cookingTime: String,
+    val prepTime: String
 )
+
+
 
 
 

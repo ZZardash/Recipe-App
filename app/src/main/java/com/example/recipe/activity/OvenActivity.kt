@@ -28,13 +28,13 @@ import kotlinx.coroutines.launch
 class OvenActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferencesHelper
-    private lateinit var timePicker: TimePicker
+    private lateinit var cookingTimePicker: TimePicker
+    private lateinit var preparationTimePicker: TimePicker
     private lateinit var startButton: Button
     private lateinit var temperature: EditText
     private lateinit var recipeList: MutableList<Recipe>
     private lateinit var btnCancelRecipe: Button
     private lateinit var lottieAnimationView: LottieAnimationView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_oven)
@@ -46,9 +46,15 @@ class OvenActivity : AppCompatActivity() {
 
         recipeList = mutableListOf()
         temperature = findViewById(R.id.etTemperature)
-        timePicker = findViewById(R.id.timePicker)
-        timePicker.setIs24HourView(true) // 24 saat formatında göstermek için
-        removeTimePickerAMPM() // AM/PM kısmını kaldırmak için özel bir işlem yapar
+
+        cookingTimePicker = findViewById(R.id.cookingTimePicker)
+        cookingTimePicker.setIs24HourView(true) // 24 saat formatında göstermek için
+
+        preparationTimePicker = findViewById(R.id.preparationTimePicker)
+        preparationTimePicker.setIs24HourView(true) // 24 saat formatında göstermek için
+
+        removeTimePickerAMPM(cookingTimePicker) // AM/PM kısmını kaldırmak için özel bir işlem yapar
+        removeTimePickerAMPM(preparationTimePicker) // AM/PM kısmını kaldırmak için özel bir işlem yapar
 
         startButton = findViewById(R.id.startButton)
         btnCancelRecipe = findViewById(R.id.btnCancelRecipe)
@@ -79,7 +85,6 @@ class OvenActivity : AppCompatActivity() {
         }
 
     }
-
     // İptal işlemini onaylama dialogunu göster
     private fun showCancelConfirmationDialog() {
         val alertDialogBuilder = AlertDialog.Builder(this)
@@ -111,28 +116,40 @@ class OvenActivity : AppCompatActivity() {
         val temp = temperature.text.toString()
         val temperature = "$temp °$temperatureUnit"
 
-        val selectedHour = timePicker.hour.toString()
-        val selectedMinute = timePicker.minute.toString()
-        val selectedTime = "$selectedHour:$selectedMinute"
+        val cookingHour = cookingTimePicker.hour.toString()
+        val cookingMinute = cookingTimePicker.minute.toString()
+        val cookingTime = "$cookingHour:$cookingMinute"
 
-        sharedPreferences.saveData("Temperature", temperature)
-        sharedPreferences.saveData("Selected Time", selectedTime)
+        val preparationHour = preparationTimePicker.hour.toString()
+        val preparationMinute = preparationTimePicker.minute.toString()
+        val preparationTime = "$preparationHour:$preparationMinute"
 
         val recipeName = sharedPreferences.loadData("RecipeName")
         val categoryName = sharedPreferences.loadData("SelectedCategory")
         val ingredients = sharedPreferences.loadData("Ingredients")
         val ins = sharedPreferences.loadData("Instructions")
-        val _temp = sharedPreferences.loadData("Temperature")
-        val _time = sharedPreferences.loadData("Selected Time")
         val recipePhotoPath = sharedPreferences.loadData("RecipePhotoPath")
         val bitmapPhoto = decodeBitmapFromFile(recipePhotoPath)
         val recipeRate = sharedPreferences.loadData("recipeRate")
         val videoLink = sharedPreferences.loadData("videoLink")
+        //cookingTime + preparationTime + temperature
 
-        //println(recipeName + "\n" + categoryName + "\n" + ingredients + "\n" + ins + "\n" + _temp + "\n" + _time + "\n" + recipePhotoPath + "\n" + recipeRate + "\n" + videoLink)
+        //data class Recipe(
+        //    val id: Long,
+        //    val title: String,
+        //    val category_name: String,
+        //    val ingredients: String,
+        //    val instructions: String,
+        //    val temperature: String,
+        //    val image: Bitmap?,
+        //    val rating: String,
+        //    val videoLink: String,
+        //    val cookingTime: String,
+        //    val prepTime: String
+        //)
 
-        val recipeId = databaseHelper.insertRecipe(recipeName, categoryName, ingredients, ins, _temp, _time, recipePhotoPath, recipeRate, videoLink)
-        val recipe = Recipe(recipeId, recipeName, categoryName, ingredients, ins, _temp, _time, bitmapPhoto, recipeRate, videoLink)
+        val recipeId = databaseHelper.insertRecipe(recipeName, categoryName, ingredients, ins, temperature, recipePhotoPath, recipeRate, videoLink, cookingTime, preparationTime)
+        val recipe = Recipe(recipeId, recipeName, categoryName, ingredients, ins, temperature, bitmapPhoto, recipeRate, videoLink, cookingTime, preparationTime)
         recipeList.add(recipe)
     }
 
@@ -154,7 +171,7 @@ class OvenActivity : AppCompatActivity() {
     }
 
     // TimePicker'dan AM/PM kısmını kaldıran işlev
-    private fun removeTimePickerAMPM() {
+    private fun removeTimePickerAMPM(timePicker: TimePicker) {
         val id = resources.getIdentifier("amPm", "id", "android")
         val amPmView = timePicker.findViewById<View>(id)
         if (amPmView != null) {
