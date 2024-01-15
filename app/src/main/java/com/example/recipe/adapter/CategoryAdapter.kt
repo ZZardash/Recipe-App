@@ -86,6 +86,7 @@ class CategoryAdapter(private val itemList: MutableList<Category>, private val c
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_view, parent, false)
         return ViewHolder(view)
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = itemList[position]
         holder.bind(item)
@@ -104,10 +105,6 @@ class CategoryAdapter(private val itemList: MutableList<Category>, private val c
             }
         }
     }
-
-
-
-
 
     override fun getItemCount(): Int {
         return itemList.size

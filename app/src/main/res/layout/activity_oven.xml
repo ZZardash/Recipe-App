@@ -116,7 +116,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_marginBottom="80dp">
 
                 <TimePicker
                     android:id="@+id/preparationTimePicker"
@@ -147,7 +148,7 @@
         android:background="@drawable/button_background"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="20dp"
         android:textColor="@android:color/white" />
 
 

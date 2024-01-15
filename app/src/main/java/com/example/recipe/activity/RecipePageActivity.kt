@@ -71,7 +71,7 @@ class RecipePageActivity : AppCompatActivity() {
 
         val instructions = databaseHelper.getRecipeColumnData(recipeId, "instructions").toString()
         val temperature = databaseHelper.getRecipeColumnData(recipeId, "temperature").toString()
-        val time = databaseHelper.getRecipeColumnData(recipeId, "selectedTime").toString()
+        val time = databaseHelper.getRecipeColumnData(recipeId, "cookingTime").toString()
         val recipeRate = databaseHelper.getRecipeColumnData(recipeId, "recipeRate").toString().toFloatOrNull()
         val videoLink = databaseHelper.getRecipeColumnData(recipeId, "videoLink").toString()
 

@@ -22,9 +22,9 @@ import com.example.recipe.util.GridSpacingItemDecoration
 
 class ViewRecipeActivity : AppCompatActivity() {
 
-    private lateinit var recipeAdapter: RecipeAdapter
+    lateinit var recipeAdapter: RecipeAdapter
+    lateinit var recipeList: MutableList<Recipe>
     private lateinit var recipeRecyclerView: RecyclerView
-    private lateinit var recipeList: MutableList<Recipe>
     private lateinit var recipeTitle: TextView
     private lateinit var categoryName: String
     private lateinit var searchEditText: EditText

@@ -93,6 +93,8 @@ class RecipeAdapter(private val itemList: MutableList<Recipe>, private val conte
         val recipe = itemList[position]
         holder.bind(recipe)
         val recipeId = recipe.id
+        val recipeIngredient = recipe.ingredients
+
         holder.recipeName.text = recipe.title
         holder.recipeImage.setImageBitmap(recipe.image)
 

@@ -123,7 +123,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         recipeRate: String,
         videoLink: String,
         cookingTime: String,
-        prepTime: String,
+        preparationTime: String,
     ): Long {
         val values = ContentValues().apply {
             put(COLUMN_RECIPE_NAME, recipeName)
@@ -135,7 +135,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_RECIPE_RATE, recipeRate)
             put(COLUMN_VIDEO_LINK, videoLink)
             put(COLUMN_COOKING_TIME, cookingTime)
-            put(COLUMN_PREPARATION_TIME, prepTime)
+            put(COLUMN_PREPARATION_TIME, preparationTime)
         }
 
         val db = writableDatabase
@@ -229,9 +229,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val recipeRate = cursor.getString(recipeRate)
             val videoLink = cursor.getString(videoLink)
             val cookingTime = cursor.getString(cookingTime)
-            val prepTime = cursor.getString(preparationTime)
+            val preparationTime = cursor.getString(preparationTime)
 
-            val recipe = Recipe(id, title, categoryName, ingredients, instructions, temperature, bitmapImage, recipeRate,videoLink, cookingTime, prepTime)
+            val recipe = Recipe(id, title, categoryName, ingredients, instructions, temperature, bitmapImage, recipeRate,videoLink, cookingTime, preparationTime)
             recipeList.add(recipe)
         }
 
