@@ -1,0 +1,249 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/SortLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginStart="30dp"
+    android:layout_marginEnd="30dp">
+
+    <!-- Handle view at the top -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:background="@drawable/handle_background"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center_horizontal"/>
+
+    <!-- Sort Text and Apply Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sort"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="@android:color/black"
+            android:textSize="25dp"/>
+
+        <Button
+            android:id="@+id/btnApplySort"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Apply"
+            android:onClick="applySorting"
+            android:layout_gravity="end"
+            android:layout_marginLeft="220dp"
+            android:background="@android:color/transparent"
+            android:textColor="#A80F48"/>
+    </LinearLayout>
+
+    <!-- Rating Sort check box -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <CheckBox
+            android:id="@+id/checkBoxLowRating"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:button="@null"
+            android:background="@drawable/rounded_checkbox_background"
+            android:paddingStart="24dp"
+            android:paddingEnd="8dp"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:id="@+id/textViewLowRating"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Lowest Rating"
+            android:clickable="true"
+            android:onClick="onTextViewClick"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/dashed_line"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"/>
+
+    <!-- Checkbox with rounded background -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <CheckBox
+            android:id="@+id/checkBoxHighRating"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:button="@null"
+            android:background="@drawable/rounded_checkbox_background"
+            android:paddingStart="24dp"
+            android:paddingEnd="8dp"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:id="@+id/textViewHighRating"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Highest Rating"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/dashed_line"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"/>
+
+    <!-- Ingredient Sort check box -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <CheckBox
+            android:id="@+id/checkBoxLowIngredient"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:button="@null"
+            android:background="@drawable/rounded_checkbox_background"
+            android:paddingStart="24dp"
+            android:paddingEnd="8dp"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:id="@+id/textViewLowIngredient"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Lowest Ingredient"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/dashed_line"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <CheckBox
+            android:id="@+id/checkBoxHighIngredient"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:button="@null"
+            android:background="@drawable/rounded_checkbox_background"
+            android:paddingStart="24dp"
+            android:paddingEnd="8dp"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:id="@+id/textViewHighIngredient"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Highest Ingredient"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+    <!-- CheckBox Time Sort-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/dashed_line"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"/>
+
+    <!-- Checkbox with rounded background -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <CheckBox
+            android:id="@+id/checkBoxLowTime"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:button="@null"
+            android:background="@drawable/rounded_checkbox_background"
+            android:paddingStart="24dp"
+            android:paddingEnd="8dp"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:id="@+id/textViewLowTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Lowest Cooking Time"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+    <!-- Space with a line background -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/dashed_line"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"/>
+
+    <!-- Checkbox with rounded background -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="30dp">
+
+        <CheckBox
+            android:id="@+id/checkBoxHighTime"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:button="@null"
+            android:background="@drawable/rounded_checkbox_background"
+            android:paddingStart="24dp"
+            android:paddingEnd="8dp"
+            android:layout_marginRight="10dp"/>
+
+        <TextView
+            android:id="@+id/textViewHighTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Highest Cooking Time"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+    <!-- Add similar CheckBoxes for other sorting options -->
+
+</LinearLayout>
