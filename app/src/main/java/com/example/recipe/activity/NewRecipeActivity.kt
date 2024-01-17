@@ -21,6 +21,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import android.widget.RatingBar
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 
@@ -55,7 +56,6 @@ class NewRecipeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_recipe)
 
-        window.decorView.setBackgroundColor(Color.TRANSPARENT)
         supportActionBar?.hide()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
@@ -74,6 +74,14 @@ class NewRecipeActivity : AppCompatActivity() {
         addRecipePhoto.setOnClickListener {
             launchPhotoPicker()
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                showCancelConfirmationDialog()
+                // Geri tuşu tıklandığında herhangi bir işlem gerçekleşmeyecek.
+                // Gerekirse geri tuşu işlemleri burada implemente edilebilir.
+            }
+        })
     }
 
     private fun setupRatingBar() {

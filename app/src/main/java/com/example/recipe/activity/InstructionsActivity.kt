@@ -3,6 +3,7 @@ package com.example.recipe.activity
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
+import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -294,7 +295,7 @@ class InstructionsActivity : AppCompatActivity() {
             val instructionsText = instructionsText.text.toString()
             sharedPreferences.saveData("Instructions", instructionsText)
 
-            val intent = Intent(this, OvenActivity::class.java)
+            val intent = Intent(this, TagsActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }

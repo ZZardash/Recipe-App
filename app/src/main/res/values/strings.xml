@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Recipe</string>
+    <string name="selected_time">%1$d minutes</string>
+    <string name="selected_rating">%1$d</string>
 </resources>

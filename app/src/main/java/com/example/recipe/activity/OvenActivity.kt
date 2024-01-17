@@ -151,7 +151,7 @@ class OvenActivity : AppCompatActivity() {
         val recipeId = databaseHelper.insertRecipe(recipeName, categoryName, ingredients, ins, temperature, recipePhotoPath, recipeRate, videoLink, cookingTime, preparationTime)
         val recipe = Recipe(recipeId, recipeName, categoryName, ingredients, ins, temperature, bitmapPhoto, recipeRate, videoLink, cookingTime, preparationTime)
         recipeList.add(recipe)
-        println("recipe name: "+recipeName)
+        println("SelectedTags: "+ sharedPreferences.loadData("selected_tags"))
 
     }
 

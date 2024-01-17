@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.R
 import com.example.recipe.adapter.RecipeAdapter
 import com.example.recipe.model.Recipe
+import com.example.recipe.util.BottomSheetFilterFragment
 import com.example.recipe.util.BottomSheetSortFragment
 import com.example.recipe.util.GridSpacingItemDecoration
 
@@ -31,6 +32,7 @@ class ViewRecipeActivity : AppCompatActivity() {
     private lateinit var originalRecipeList: MutableList<Recipe>
     private lateinit var btnHome: Button
     private lateinit var btnSort: Button
+    private lateinit var btnFilter: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +53,8 @@ class ViewRecipeActivity : AppCompatActivity() {
         recipeTitle = findViewById(R.id.recipeTitle)
         searchEditText = findViewById(R.id.searchEditText)
         btnHome = findViewById(R.id.btnHome)
+        btnSort = findViewById(R.id.btnSort)
+        btnFilter = findViewById(R.id.btnFilter)
 
         // DatabaseHelper sınıfını kullanmak için instance oluştur
         val databaseHelper = DatabaseHelper(this)
@@ -69,10 +73,19 @@ class ViewRecipeActivity : AppCompatActivity() {
             transitionToHome()
         }
 
-        btnSort = findViewById(R.id.btnSort)
         btnSort.setOnClickListener {
             showBottomSheetDialog()
         }
+
+        btnFilter.setOnClickListener {
+            showFilterBottomSheetDialog()
+        }
+
+    }
+
+    private fun showFilterBottomSheetDialog() {
+        val bottomSheetFilterFragment = BottomSheetFilterFragment()
+        bottomSheetFilterFragment.show(supportFragmentManager, bottomSheetFilterFragment.tag)
 
     }
 
