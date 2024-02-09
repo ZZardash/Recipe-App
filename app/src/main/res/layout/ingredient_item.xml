@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ingredient_item.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    >
+
+    <!-- Sol kısımdaki normal string etIngredient -->
+    <EditText
+        android:id="@+id/etIngredient"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="Ingredient"
+        android:textSize="16sp"
+        android:inputType="text"
+        android:layout_marginEnd="8dp"
+        android:maxLength="20"/>
+
+    <!-- Orta kısımdaki numara etIngredient -->
+    <EditText
+        android:id="@+id/etQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="Quantity"
+        android:textSize="16sp"
+        android:layout_marginEnd="8dp"
+        android:maxLength="6"/>
+
+    <!-- Sağdaki drop-down menü -->
+    <Spinner
+        android:id="@+id/spUnit"
+        android:hint="Unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        />
+
+</LinearLayout>
