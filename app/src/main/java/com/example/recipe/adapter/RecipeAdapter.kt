@@ -3,23 +3,18 @@ package com.example.recipe.adapter
 import DatabaseHelper
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.media.Image
 import android.view.LayoutInflater
 import com.example.recipe.model.Recipe
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.R
-import com.example.recipe.activity.RecipePageActivity
-import com.example.recipe.model.Category
-import com.example.recipe.util.CategoryItemClickListener
+import com.example.recipe.activity.viewrecipe.RecipePageActivity
 
 
 class RecipeAdapter(private val itemList: MutableList<Recipe>, private val context: Context) : RecyclerView.Adapter<RecipeAdapter.ViewHolder>() {
@@ -81,7 +76,10 @@ class RecipeAdapter(private val itemList: MutableList<Recipe>, private val conte
             deleteIcon.visibility = View.INVISIBLE
         }
     }
-
+    fun setRecipes(filteredRecipes: List<Recipe>) {
+        val recipes = filteredRecipes
+        notifyDataSetChanged()
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // Inflate the recipe item view layout (item_recipe_view.xml)
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_recipe_view, parent, false)
@@ -93,10 +91,12 @@ class RecipeAdapter(private val itemList: MutableList<Recipe>, private val conte
         val recipe = itemList[position]
         holder.bind(recipe)
         val recipeId = recipe.id
-        val recipeIngredient = recipe.ingredients
+
+
 
         holder.recipeName.text = recipe.title
         holder.recipeImage.setImageBitmap(recipe.image)
+
 
         holder.btnCardView.setOnClickListener{
             val intent = Intent(context, RecipePageActivity::class.java)

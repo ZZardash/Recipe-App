@@ -40,6 +40,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_VIDEO_LINK = "videoLink"
         private const val COLUMN_COOKING_TIME = "cookingTime"
         private const val COLUMN_PREPARATION_TIME = "preparationTime"
+        private const val COLUMN_TAGS = "tags"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -64,7 +65,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 "$COLUMN_RECIPE_RATE TEXT," +
                 "$COLUMN_VIDEO_LINK TEXT," +
                 "$COLUMN_COOKING_TIME TEXT," +
-                "$COLUMN_PREPARATION_TIME TEXT" +
+                "$COLUMN_PREPARATION_TIME TEXT," +
+                "$COLUMN_TAGS TEXT" +
                 ")"
         db.execSQL(createRecipesTableQuery)
     }
@@ -124,6 +126,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         videoLink: String,
         cookingTime: String,
         preparationTime: String,
+        tags: String,
     ): Long {
         val values = ContentValues().apply {
             put(COLUMN_RECIPE_NAME, recipeName)
@@ -136,6 +139,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_VIDEO_LINK, videoLink)
             put(COLUMN_COOKING_TIME, cookingTime)
             put(COLUMN_PREPARATION_TIME, preparationTime)
+            put(COLUMN_TAGS, tags)
+
         }
 
         val db = writableDatabase
@@ -215,6 +220,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val videoLink = cursor.getColumnIndex(COLUMN_VIDEO_LINK)
         val cookingTime = cursor.getColumnIndex(COLUMN_COOKING_TIME)
         val preparationTime = cursor.getColumnIndex(COLUMN_PREPARATION_TIME)
+        val tags = cursor.getColumnIndex(COLUMN_TAGS)
 
         while (cursor.moveToNext()) {
             val id = cursor.getLong(recipeIndexId)
@@ -230,8 +236,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val videoLink = cursor.getString(videoLink)
             val cookingTime = cursor.getString(cookingTime)
             val preparationTime = cursor.getString(preparationTime)
+            val tags = cursor.getString(tags)
 
-            val recipe = Recipe(id, title, categoryName, ingredients, instructions, temperature, bitmapImage, recipeRate,videoLink, cookingTime, preparationTime)
+            val recipe = Recipe(id, title, categoryName, ingredients, instructions, temperature, bitmapImage, recipeRate,videoLink, cookingTime, preparationTime,tags)
             recipeList.add(recipe)
         }
 

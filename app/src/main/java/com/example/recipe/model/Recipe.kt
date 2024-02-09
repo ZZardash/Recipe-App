@@ -13,7 +13,8 @@ data class Recipe(
     val rating: String,
     val videoLink: String,
     val cookingTime: String,
-    val prepTime: String
+    val prepTime: String,
+    val tags: String
 )
 
 

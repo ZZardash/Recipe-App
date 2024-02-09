@@ -1,4 +1,4 @@
-package com.example.recipe.activity
+package com.example.recipe.activity.newrecipe
 
 import DatabaseHelper
 import android.content.Intent
@@ -25,7 +25,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +32,7 @@ import com.example.recipe.model.Category
 import com.example.recipe.adapter.CategoryAdapter
 import com.example.recipe.util.GridSpacingItemDecoration
 import com.example.recipe.R
+import com.example.recipe.activity.home.MainActivity
 import com.example.recipe.util.SharedPreferencesHelper
 import java.io.File
 import java.io.FileOutputStream

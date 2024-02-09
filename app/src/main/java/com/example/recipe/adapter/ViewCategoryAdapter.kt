@@ -13,9 +13,8 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.R
-import com.example.recipe.activity.ViewRecipeActivity
+import com.example.recipe.activity.viewrecipe.ViewRecipeActivity
 import com.example.recipe.model.Category
-import com.example.recipe.util.CategoryItemClickListener
 
 class ViewCategoryAdapter(private val itemList: MutableList<Category>, private val context: Context) : RecyclerView.Adapter<ViewCategoryAdapter.ViewHolder>() {
 

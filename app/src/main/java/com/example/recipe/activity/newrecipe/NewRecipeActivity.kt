@@ -1,5 +1,5 @@
 // İkinci Sayfa (Yeni Tarif)
-package com.example.recipe.activity
+package com.example.recipe.activity.newrecipe
 
 import android.content.Context
 import android.content.Intent
@@ -7,7 +7,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.util.Log
 import android.widget.Button
@@ -24,6 +23,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.recipe.activity.home.MainActivity
 
 
 class NewRecipeActivity : AppCompatActivity() {
@@ -34,6 +34,8 @@ class NewRecipeActivity : AppCompatActivity() {
     private lateinit var recipeName: EditText
     private lateinit var btnCancelRecipe: Button
     private lateinit var ratingBar: RatingBar
+
+    private lateinit var etRecipeName: EditText
 
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -64,6 +66,12 @@ class NewRecipeActivity : AppCompatActivity() {
         btnNewCategory = findViewById(R.id.btnNewCategory)
         btnCancelRecipe = findViewById(R.id.btnCancelRecipe)
         ratingBar = findViewById(R.id.ratingBar)
+        etRecipeName = findViewById(R.id.etRecipeName)
+
+        etRecipeName.setOnClickListener {
+            it.revealOnFocusHint
+        }
+
         btnCancelRecipe.setOnClickListener {
             showCancelConfirmationDialog()
         }

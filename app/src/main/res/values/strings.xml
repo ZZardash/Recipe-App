@@ -1,5 +1,21 @@
 <resources>
     <string name="app_name">Recipe</string>
     <string name="selected_time">%1$d minutes</string>
-    <string name="selected_rating">%1$d</string>
+    <string name="selected_rating">%1$d stars</string>
+
+
+    <string name="ingredient_quantity_unit_gram">Gr</string>
+    <string name="ingredient_quantity_unit_kilogram">Kg</string>
+    <string name="ingredient_quantity_unit_liter">Lt</string>
+    <string name="ingredient_quantity_unit_teaspoon">Tspn</string>
+    <string name="ingredient_quantity_unit_tablespoon">Tblspn</string>
+    <string name="ingredient_quantity_unit_cup">Cup</string>
+    <string name="ingredient_quantity_unit_piece">Piece</string>
+    <string name="ingredient_quantity_unit_slice">Slice</string>
+    <string name="ingredient_quantity_unit_pinch">Pinch</string>
+    <string name="ingredient_quantity_unit_milliliter">Mi. lt</string>
+    <string name="ingredient_quantity_unit_pound">Pound</string>
+    <string name="ingredient_quantity_unit_gallon">Gallon</string>
+    <string name="ingredient_quantity_unit_quart">Quart</string>
+    <string name="ingredient_quantity_unit_pint">Pint</string>
 </resources>

@@ -9,6 +9,10 @@ android {
     namespace 'com.example.recipe'
     compileSdk 34
 
+    buildFeatures {
+        viewBinding = true
+    }
+    
     buildscript {
         repositories {
             google()
@@ -77,6 +81,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.4'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

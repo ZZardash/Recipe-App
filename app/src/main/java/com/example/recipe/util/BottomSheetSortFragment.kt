@@ -10,7 +10,7 @@ import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.recipe.R
-import com.example.recipe.activity.ViewRecipeActivity
+import com.example.recipe.activity.viewrecipe.ViewRecipeActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog

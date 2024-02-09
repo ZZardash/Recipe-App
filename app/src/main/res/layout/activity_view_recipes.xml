@@ -9,10 +9,12 @@
 
     <TextView
         android:id="@+id/recipeTitle"
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_bold"
         android:padding="16dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="3dp"
         android:text=""
         android:textAllCaps="true"
         android:textColor="#E1B5B2"
@@ -55,12 +57,12 @@
         />
 
     <EditText
-        android:id="@+id/searchEditText"
+        android:id="@+id/searchetIngredient"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/recipeTitle"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:background="@android:drawable/editbox_background_normal"
@@ -75,7 +77,7 @@
         android:id="@+id/recipeRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/searchEditText"
+        android:layout_below="@id/searchetIngredient"
         android:layout_marginStart="20dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="20dp"

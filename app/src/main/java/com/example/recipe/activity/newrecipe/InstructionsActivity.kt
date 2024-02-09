@@ -1,9 +1,8 @@
-package com.example.recipe.activity
+package com.example.recipe.activity.newrecipe
 
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
-import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -16,6 +15,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.recipe.R
+import com.example.recipe.activity.home.MainActivity
 import com.example.recipe.util.SharedPreferencesHelper
 
 class InstructionsActivity : AppCompatActivity() {
@@ -70,11 +70,11 @@ class InstructionsActivity : AppCompatActivity() {
 
         val btnOk: Button = dialogView.findViewById(R.id.btnOk)
         btnOk.setOnClickListener {
-            val editTextVideoName: EditText = dialogView.findViewById(R.id.editTextVideoName)
-            val editTextVideoLink: EditText = dialogView.findViewById(R.id.editTextVideoLink)
+            val EditTextVideoName: EditText = dialogView.findViewById(R.id.etIngredientVideoName)
+            val EditTextVideoLink: EditText = dialogView.findViewById(R.id.etIngredientVideoLink)
 
-            val videoName = editTextVideoName.text.toString()
-            val videoLink = editTextVideoLink.text.toString()
+            val videoName = EditTextVideoName.text.toString()
+            val videoLink = EditTextVideoLink.text.toString()
 
             if (isValidLink(videoLink)) {
                 // Video limitine ulaşılıp ulaşılmadığını kontrol et
@@ -291,7 +291,7 @@ class InstructionsActivity : AppCompatActivity() {
     // Fırın sayfasına geçiş yapacak butona tıklanınca çalışacak fonksiyon
     private fun goToOvenPage() {
         btnToOven.setOnClickListener {
-            instructionsText = findViewById(R.id.instructionsEditText)
+            instructionsText = findViewById(R.id.instructionsetIngredient)
             val instructionsText = instructionsText.text.toString()
             sharedPreferences.saveData("Instructions", instructionsText)
 

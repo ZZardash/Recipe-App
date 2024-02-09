@@ -14,6 +14,9 @@ class SharedPreferencesHelper(private val context: Context) {
         editor.putString(key, value)
         editor.apply()
     }
+    fun getStringData(key: String, defaultValue: String): String? {
+        return sharedPreferences.getString(key, defaultValue)
+    }
 
     // Functions for Int values
     fun saveIntData(key: String, value: Int) {
@@ -32,6 +35,14 @@ class SharedPreferencesHelper(private val context: Context) {
         val editor = sharedPreferences.edit()
         editor.putString(titleData, stringData)
         editor.apply()
+    }
+    fun saveStringSetData(key: String, value: MutableSet<String>) {
+        val editor = sharedPreferences.edit()
+        editor.putStringSet(key, value)
+        editor.apply()
+    }
+    fun loadStringSetData(key: String): Set<String> {
+        return sharedPreferences.getStringSet(key, emptySet()) ?: emptySet()
     }
 
     fun loadData(titleData: String): String {

@@ -1,4 +1,4 @@
-package com.example.recipe.activity
+package com.example.recipe.activity.viewrecipe
 
 import DatabaseHelper
 import android.content.Intent
@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.R
+import com.example.recipe.activity.home.MainActivity
 import com.example.recipe.adapter.ViewCategoryAdapter
 import com.example.recipe.model.Category
 import com.example.recipe.util.GridSpacingItemDecoration
@@ -39,7 +40,7 @@ class ViewCategoriesActivity : AppCompatActivity() {
         categoryRecyclerView = findViewById(R.id.categoryRecyclerView)
         categoryList = mutableListOf()
         originalCategoryList = mutableListOf()
-        searchEditText = findViewById(R.id.searchEditText)
+        searchEditText = findViewById(R.id.searchetIngredient)
         btnHome = findViewById(R.id.btnHome)
         btnHome.setOnClickListener {
             // Ana ekrana geçiş yap

@@ -1,7 +1,7 @@
 // ViewRecipeActivity.kt
 
-package com.example.recipe.activity
-
+package com.example.recipe.activity.viewrecipe
+import BottomSheetFilterFragment
 import DatabaseHelper
 import android.content.Intent
 import android.graphics.Color
@@ -12,31 +12,42 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.R
+import com.example.recipe.activity.home.MainActivity
 import com.example.recipe.adapter.RecipeAdapter
+import com.example.recipe.databinding.ActivityViewRecipesBinding
 import com.example.recipe.model.Recipe
-import com.example.recipe.util.BottomSheetFilterFragment
 import com.example.recipe.util.BottomSheetSortFragment
+import com.example.recipe.util.FilterViewModel
 import com.example.recipe.util.GridSpacingItemDecoration
 
 class ViewRecipeActivity : AppCompatActivity() {
 
     lateinit var recipeAdapter: RecipeAdapter
     lateinit var recipeList: MutableList<Recipe>
+    lateinit var originalRecipeList: MutableList<Recipe>
     private lateinit var recipeRecyclerView: RecyclerView
     private lateinit var recipeTitle: TextView
     private lateinit var categoryName: String
-    private lateinit var searchEditText: EditText
-    private lateinit var originalRecipeList: MutableList<Recipe>
+    private lateinit var searchetIngredient: EditText
     private lateinit var btnHome: Button
     private lateinit var btnSort: Button
     private lateinit var btnFilter: Button
-
+    private lateinit var binding: ActivityViewRecipesBinding
+    private lateinit var bottomSheetFilterFragment: BottomSheetFilterFragment
+    private lateinit var filterViewModel: ViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_view_recipes)
+        binding = ActivityViewRecipesBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        bottomSheetFilterFragment = BottomSheetFilterFragment()
+
+        filterViewModel = ViewModelProvider(this).get(FilterViewModel::class.java)
 
         // ActionBar'ı gizle ve arkaplan rengini ayarla
         window.decorView.setBackgroundColor(Color.TRANSPARENT)
@@ -47,17 +58,18 @@ class ViewRecipeActivity : AppCompatActivity() {
         categoryName = intent.getStringExtra("selectedCategoryName").toString()
 
         // UI elemanlarını ilgili XML elemanlarıyla bağla
-        recipeRecyclerView = findViewById(R.id.recipeRecyclerView)
+        recipeRecyclerView= binding.recipeRecyclerView
+        recipeTitle= binding.recipeTitle
+        searchetIngredient=binding.searchetIngredient
+        btnHome=binding.btnHome
+        btnSort=binding.btnSort
+        btnFilter=binding.btnFilter
+
         recipeList = mutableListOf()
         originalRecipeList = mutableListOf()
-        recipeTitle = findViewById(R.id.recipeTitle)
-        searchEditText = findViewById(R.id.searchEditText)
-        btnHome = findViewById(R.id.btnHome)
-        btnSort = findViewById(R.id.btnSort)
-        btnFilter = findViewById(R.id.btnFilter)
+
 
         // DatabaseHelper sınıfını kullanmak için instance oluştur
-        val databaseHelper = DatabaseHelper(this)
 
         // Arama işlevselliği için dinleyiciyi ayarla
         setupSearchListener()
@@ -72,21 +84,30 @@ class ViewRecipeActivity : AppCompatActivity() {
         btnHome.setOnClickListener {
             transitionToHome()
         }
-
         btnSort.setOnClickListener {
             showBottomSheetDialog()
         }
-
         btnFilter.setOnClickListener {
             showFilterBottomSheetDialog()
         }
-
+    }
+    fun resetRecipes() {
+        // Reset recipes to the original list
+        recipeList.clear()
+        recipeList.addAll(originalRecipeList)
+        recipeAdapter.notifyDataSetChanged()
+    }
+    fun setRecipes(filteredRecipes: List<Recipe>) {
+        recipeList.clear()
+        recipeList.addAll(filteredRecipes)
+        recipeAdapter.notifyDataSetChanged()
     }
 
     private fun showFilterBottomSheetDialog() {
-        val bottomSheetFilterFragment = BottomSheetFilterFragment()
         bottomSheetFilterFragment.show(supportFragmentManager, bottomSheetFilterFragment.tag)
-
+            // Assuming addedTags is a property in your FilterViewModel
+            val addedTags = (filterViewModel as? FilterViewModel)?.addedTags
+            println("Added Tags: $addedTags")
     }
 
     private fun showBottomSheetDialog() {
@@ -104,7 +125,7 @@ class ViewRecipeActivity : AppCompatActivity() {
 
     // Arama işlevselliği için TextWatcher dinleyicisi ayarla
     private fun setupSearchListener() {
-        searchEditText.addTextChangedListener(createTextWatcher())
+        searchetIngredient.addTextChangedListener(createTextWatcher())
     }
 
     // TextWatcher dinleyicisi oluştur
@@ -114,7 +135,7 @@ class ViewRecipeActivity : AppCompatActivity() {
 
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                 // Arama sorgusuna göre reçeteleri filtrele
-                filterRecipes(charSequence.toString())
+                searchRecipes(charSequence.toString())
             }
 
             override fun afterTextChanged(editable: Editable?) {}
@@ -123,7 +144,7 @@ class ViewRecipeActivity : AppCompatActivity() {
 
     // RecyclerView ve adaptörü ayarla
     private fun setupRecyclerView(recyclerView: RecyclerView) {
-        recipeTitle.text = "$categoryName recipes"
+        recipeTitle.text = "$categoryName"
         recipeAdapter = RecipeAdapter(recipeList, this)
         recyclerView.adapter = recipeAdapter
         val spanCount = 2
@@ -139,7 +160,7 @@ class ViewRecipeActivity : AppCompatActivity() {
         recyclerView.addItemDecoration(itemDecoration)
     }
 
-    // Reçeteleri yükle
+    // Tarifleri yükle
     private fun loadRecipes() {
         val databaseHelper = DatabaseHelper(this)
         val recipes = databaseHelper.getSpecificRecipes(categoryName)
@@ -156,7 +177,7 @@ class ViewRecipeActivity : AppCompatActivity() {
     }
 
     // Reçeteleri filtrele
-    private fun filterRecipes(query: String) {
+    private fun searchRecipes(query: String) {
         // Orijinal reçete listesinde sorguya uyanları filtrele
         val filteredList = originalRecipeList.filter { recipe ->
             recipe.title.contains(query, ignoreCase = true)

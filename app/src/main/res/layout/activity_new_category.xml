@@ -15,6 +15,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:backgroundTint="#4D5C31"
        />
 
     <!-- Kategori Başlığı -->

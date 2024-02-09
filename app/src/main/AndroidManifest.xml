@@ -32,39 +32,39 @@
         </activity>
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.home.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Recipe">
         </activity>
 
         <activity
-            android:name=".activity.RecipePageActivity"
+            android:name=".activity.viewrecipe.RecipePageActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.AppCompat"
             />
 
         <activity
-            android:name=".activity.ViewRecipeActivity"
+            android:name=".activity.viewrecipe.ViewRecipeActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.AppCompat"
             />
         <activity
-            android:name=".activity.ViewCategoriesActivity"
+            android:name=".activity.viewrecipe.ViewCategoriesActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.AppCompat"
             />
         <activity
-            android:name=".activity.InstructionsActivity"
+            android:name=".activity.newrecipe.InstructionsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat"
             android:windowSoftInputMode="adjustPan"
         />
         <activity
-            android:name=".activity.OvenActivity"
+            android:name=".activity.newrecipe.OvenActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat"
             android:windowSoftInputMode="adjustPan"
@@ -76,26 +76,26 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity
-            android:name=".activity.IngredientsActivity"
+            android:name=".activity.newrecipe.IngredientsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat"
             android:windowSoftInputMode="adjustPan"
             />
         <activity
-            android:name=".activity.NewCategoryActivity"
+            android:name=".activity.newrecipe.NewCategoryActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat"
             android:windowSoftInputMode="adjustPan"
             />
         <activity
-            android:name=".activity.NewRecipeActivity"
+            android:name=".activity.newrecipe.NewRecipeActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.AppCompat"
         />
 
         <activity
-            android:name=".activity.TagsActivity"
+            android:name=".activity.newrecipe.TagsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.AppCompat"

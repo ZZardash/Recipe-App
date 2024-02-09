@@ -5,9 +5,8 @@ import android.app.Activity
 import android.content.Intent
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import com.example.recipe.R
-import com.example.recipe.activity.IngredientsActivity
+import com.example.recipe.activity.newrecipe.IngredientsActivity
 
 class CategoryItemClickListener(private val activity: Activity) : View.OnClickListener {
 

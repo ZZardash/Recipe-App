@@ -1,5 +1,5 @@
 // Tarif Sayfası (RecipePage) Aktivitesi
-package com.example.recipe.activity
+package com.example.recipe.activity.viewrecipe
 
 import DatabaseHelper
 import android.animation.AnimatorSet
@@ -26,13 +26,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.R
-import com.example.recipe.adapter.IngredientAdapter
+import com.example.recipe.activity.home.MainActivity
+import com.example.recipe.adapter.ViewIngredientAdapter
+
 class RecipePageActivity : AppCompatActivity() {
 
     private lateinit var ingredientsButton: Button
@@ -435,7 +436,7 @@ class RecipePageActivity : AppCompatActivity() {
         ingredientsTitleTextView.layoutParams = titleLayoutParams
         combinedLayout.addView(ingredientsTitleTextView)
 
-// Create a RecyclerView for ingredients
+        // Create a RecyclerView for ingredients
         val recyclerView = RecyclerView(this)
         recyclerView.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -444,8 +445,8 @@ class RecipePageActivity : AppCompatActivity() {
         recyclerView.setPadding(20, 0, 0, 0)
         combinedLayout.addView(recyclerView)
 
-// Create and set the adapter for the RecyclerView
-        val adapter = IngredientAdapter(ingredients)
+        // Create and set the adapter for the RecyclerView
+        val adapter = ViewIngredientAdapter(ingredients)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 

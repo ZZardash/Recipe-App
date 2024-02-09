@@ -1,72 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layoutTags"
-    android:layout_width="200dp"
-    android:layout_height="wrap_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:id="@+id/layoutTags"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnTagCardView"
         android:layout_width="185dp"
         android:layout_height="100dp"
-        android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="15dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <!-- Use LinearLayout to set width to wrap_content -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <!-- CheckBox in the top-left corner -->
-            <CheckBox
-                android:id="@+id/checkBoxTag"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:button="@null"
-                android:background="@drawable/rounded_checkbox_background"
-                android:paddingStart="24dp"
-                android:paddingEnd="8dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tagName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/checkBoxTag"
-                android:layout_centerVertical="true"
-                android:ellipsize="end"
-                android:fontFamily="@font/montserrat_bold"
-                android:maxLines="1"
-                android:padding="8dp"
-                android:textAllCaps="true"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                tools:text="recipe title" />
+                <!-- CheckBox in the top-left corner -->
+                <CheckBox
+                    android:id="@+id/checkBoxTag"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/rounded_checkbox_background"
+                    android:button="@null"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="8dp" />
 
-            <!-- Circular ImageView on the right side -->
-            <ImageView
-                android:id="@+id/circleImageView"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:scaleType="centerCrop"/>
+                <TextView
+                    android:id="@+id/tagName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/checkBoxTag"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:maxLines="1"
+                    android:padding="8dp"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    tools:text="recipe title" />
 
-            <ImageView
-                android:id="@+id/deleteIconTag"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:src="@drawable/ic_delete"
-                android:padding="8dp"
-                android:visibility="invisible"/>
-        </RelativeLayout>
+                <!-- Circular ImageView on the right side -->
+                <ImageView
+                    android:id="@+id/circleImageView"
+                    android:layout_width="70dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:scaleType="centerCrop" />
+
+                <ImageView
+                    android:id="@+id/deleteIconTag"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_delete"
+                    android:visibility="invisible" />
+            </LinearLayout>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

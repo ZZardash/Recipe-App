@@ -13,7 +13,7 @@
         android:layout_height="match_parent"></FrameLayout>
 
     <EditText
-        android:id="@+id/editTextVideoName"
+        android:id="@+id/etIngredientVideoName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Video Name"
@@ -21,7 +21,7 @@
         android:background="@android:color/transparent" />
 
     <EditText
-        android:id="@+id/editTextVideoLink"
+        android:id="@+id/etIngredientVideoLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter link"

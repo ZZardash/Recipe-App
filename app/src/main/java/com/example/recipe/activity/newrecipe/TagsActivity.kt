@@ -1,14 +1,9 @@
-package com.example.recipe.activity
-import android.content.Context
+package com.example.recipe.activity.newrecipe
 import android.content.Intent
-import android.content.SharedPreferences
-import android.graphics.Bitmap
 import android.graphics.Rect
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView

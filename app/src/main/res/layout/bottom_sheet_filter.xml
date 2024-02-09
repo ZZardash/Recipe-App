@@ -1,8 +1,12 @@
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
     android:id="@+id/FilterLayout"
     android:layout_width="match_parent"
-    android:layout_height="500dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_marginStart="30dp"
     android:layout_marginEnd="30dp">
@@ -18,45 +22,56 @@
 
     <!-- Filter Text and Apply Button -->
 
-        <LinearLayout
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp">
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:layout_marginBottom="20dp">
+            android:text="Filter"
+            android:fontFamily="@font/montserrat_bold"
+            android:textColor="@android:color/black"
+            android:textSize="25dp"/>
+        <Button
+            android:id="@+id/btnRemoveFilter"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Remove filters"
+            android:onClick="applyFiltering"
+            android:layout_gravity="end"
+            android:background="@android:color/transparent"
+            android:textColor="#A80F48"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Filter"
-                android:fontFamily="@font/montserrat_bold"
-                android:textColor="@android:color/black"
-                android:textSize="25dp"/>
-
-            <Button
-                android:id="@+id/btnApplyFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:fontFamily="@font/montserrat_bold"
-                android:text="Apply"
-                android:onClick="applyFiltering"
-                android:layout_gravity="end"
-                android:layout_marginLeft="220dp"
-                android:background="@android:color/transparent"
-                android:textColor="#A80F48"/>
-        </LinearLayout>
+        <Button
+            android:id="@+id/btnApplyFilter"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_weight="0.3"
+            android:fontFamily="@font/montserrat_bold"
+            android:text="Apply"
+            android:onClick="applyFiltering"
+            android:layout_gravity="end"
+            android:background="@android:color/transparent"
+            android:textColor="#A80F48"/>
+    </LinearLayout>
 
 
 
 
-    <!-- Add EditText and Add Button for adding new tags -->
-
+    <!-- Add etIngredient and Add Button for adding new tags -->
     <LinearLayout
         android:id="@+id/addTagContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginBottom="10dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:hint="Add a new tag"
+                android:hint="Contains these ingredients"
                 android:inputType="text"
                 android:imeOptions="actionDone"
                 android:paddingStart="16dp"
@@ -85,13 +100,12 @@
                 android:background="@drawable/plus_button"
                 android:layout_gravity="center_vertical"/>
         </LinearLayout>
-        <LinearLayout
+        <com.example.recipe.util.FlowLayout
             android:id="@+id/addContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </com.example.recipe.util.FlowLayout>
     </LinearLayout>
 
 
@@ -101,27 +115,30 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="20dp">
+            android:gravity="center_vertical">
 
-            <EditText
+
+        <EditText
                 android:id="@+id/etRemoveIngredientTag"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:hint="Add a new tag"
+                android:hint="Not contain these ingredients"
                 android:inputType="text"
                 android:imeOptions="actionDone"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"/>
+
+
 
             <Button
                 android:id="@+id/btnRemoveIngredientTag"
@@ -131,14 +148,15 @@
                 android:layout_gravity="center_vertical"/>
         </LinearLayout>
 
-        <LinearLayout
+        <com.example.recipe.util.FlowLayout
             android:id="@+id/removeContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        </com.example.recipe.util.FlowLayout>
 
-        </LinearLayout>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -149,7 +167,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat_bold"
-            android:text="Cooking\n  Time">
+            android:text="Cooking\n   Time">
 
         </TextView>
         <LinearLayout
@@ -178,6 +196,49 @@
 
         </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:fontFamily="@font/montserrat_bold"
+            android:text=" Prepare\n   Time">
+
+        </TextView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <SeekBar
+                android:id="@+id/steppedSeekBarPrep"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:max="5"
+                android:progress="0"
+                android:thumb="@drawable/stepped_slider_thumb"
+                android:splitTrack="false" />
+            <TextView
+                android:id="@+id/selectedPrepTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text=""
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
 
 
     <LinearLayout
@@ -222,6 +283,82 @@
         </LinearLayout>
     </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="DIET"
+                android:textSize="18dp"
+                android:fontFamily="@font/montserrat_bold">
 
+            </TextView>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupDiet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="NUTRITION"
+                android:textSize="18dp"
+                android:fontFamily="@font/montserrat_bold">
+
+            </TextView>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupNutrition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CUISINE"
+                android:textSize="18dp"
+                android:fontFamily="@font/montserrat_bold">
+
+            </TextView>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupCuisine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar"/>
+
+        </LinearLayout>
 
 </LinearLayout>
+
+</ScrollView>
+
+
+

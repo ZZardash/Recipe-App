@@ -1,4 +1,4 @@
-package com.example.recipe.activity
+package com.example.recipe.activity.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,8 @@ import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import com.example.recipe.R
-import com.example.recipe.ui.theme.RecipeTheme
+import com.example.recipe.activity.newrecipe.NewRecipeActivity
+import com.example.recipe.activity.viewrecipe.ViewCategoriesActivity
 import com.example.recipe.util.SharedPreferencesHelper
 
 class MainActivity : ComponentActivity() {

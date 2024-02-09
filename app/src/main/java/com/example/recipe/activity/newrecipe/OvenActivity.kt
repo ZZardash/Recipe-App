@@ -1,8 +1,7 @@
 // Fırın (Oven) Aktivite
-package com.example.recipe.activity
+package com.example.recipe.activity.newrecipe
 
 import DatabaseHelper
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -17,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.lottie.LottieAnimationView
 import com.example.recipe.R
+import com.example.recipe.activity.home.MainActivity
 import com.example.recipe.model.Recipe
 import com.example.recipe.util.SharedPreferencesHelper
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -123,6 +123,7 @@ class OvenActivity : AppCompatActivity() {
         val preparationHour = preparationTimePicker.hour.toString()
         val preparationMinute = preparationTimePicker.minute.toString()
         val preparationTime = "$preparationHour:$preparationMinute"
+        println("PreparationTime: "+ preparationTime)
 
         val recipeName = sharedPreferences.loadData("RecipeName")
         val categoryName = sharedPreferences.loadData("SelectedCategory")
@@ -132,6 +133,7 @@ class OvenActivity : AppCompatActivity() {
         val bitmapPhoto = decodeBitmapFromFile(recipePhotoPath)
         val recipeRate = sharedPreferences.loadData("recipeRate")
         val videoLink = sharedPreferences.loadData("videoLink")
+        val tags = sharedPreferences.loadData("selected_tags")
         //cookingTime + preparationTime + temperature
 
         //data class Recipe(
@@ -146,10 +148,11 @@ class OvenActivity : AppCompatActivity() {
         //    val videoLink: String,
         //    val cookingTime: String,
         //    val prepTime: String
+        //    val tags: String
         //)
 
-        val recipeId = databaseHelper.insertRecipe(recipeName, categoryName, ingredients, ins, temperature, recipePhotoPath, recipeRate, videoLink, cookingTime, preparationTime)
-        val recipe = Recipe(recipeId, recipeName, categoryName, ingredients, ins, temperature, bitmapPhoto, recipeRate, videoLink, cookingTime, preparationTime)
+        val recipeId = databaseHelper.insertRecipe(recipeName, categoryName, ingredients, ins, temperature, recipePhotoPath, recipeRate, videoLink, cookingTime, preparationTime, tags)
+        val recipe = Recipe(recipeId, recipeName, categoryName, ingredients, ins, temperature, bitmapPhoto, recipeRate, videoLink, cookingTime, preparationTime, tags)
         recipeList.add(recipe)
         println("SelectedTags: "+ sharedPreferences.loadData("selected_tags"))
 
