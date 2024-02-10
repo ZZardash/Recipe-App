@@ -1,21 +1,26 @@
+import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.R
-import com.example.recipe.models.Ingredient
+import com.example.recipe.enum.getAllIngredientQuantityUnits
+import com.example.recipe.enum.getLabel
+import com.example.recipe.model.Ingredient
 
 // ... (existing imports)
 
 class IngredientAdapter(
     private val itemsList: List<Ingredient>,
     private val textChangeListener: IngredientTextChangeListener
-) : RecyclerView.Adapter<IngredientAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<IngredientAdapter.ViewHolder>(),
+    AdapterView.OnItemSelectedListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
@@ -35,7 +40,7 @@ class IngredientAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val etIngredient: EditText = itemView.findViewById(R.id.etIngredient)
         private val etQuantity: EditText = itemView.findViewById(R.id.etQuantity)
-        private val unitSpinner: Spinner = itemView.findViewById(R.id.spUnit)
+        private val spUnit: Spinner = itemView.findViewById(R.id.spUnit)
 
         fun bind(item: Ingredient, position: Int) {
             etIngredient.setText(item.name)
@@ -76,8 +81,24 @@ class IngredientAdapter(
                 override fun afterTextChanged(s: Editable?) {}
             })
 
+            val units = getAllIngredientQuantityUnits()
+            val labels = units.map { it.getLabel(itemView.context) }
+
+            // Create a custom ArrayAdapter to set maximum height for the dropdown
+            val adapter = CustomSpinnerAdapter(
+                itemView.context,
+                android.R.layout.simple_spinner_item,
+                labels
+            )
+
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+            // Apply the adapter to the spinner
+            spUnit.adapter = adapter
+
             // Set a listener for the Unit Spinner if needed
-            unitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            spUnit.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>?,
                     view: View?,
@@ -96,5 +117,33 @@ class IngredientAdapter(
 
     interface IngredientTextChangeListener {
         fun onIngredientTextChanged(position: Int, newText: String)
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        // Handle item selection if needed
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
+        // Handle the case where nothing is selected in the spinner
+    }
+}
+
+// Create a custom adapter to set maximum height for the dropdown
+class CustomSpinnerAdapter(
+    context: Context,
+    resource: Int,
+    private val items: List<String>
+) : ArrayAdapter<String>(context, resource, items) {
+
+    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val view = super.getDropDownView(position, convertView, parent)
+
+        // Set custom height for each dropdown item
+        view.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+        return view
     }
 }

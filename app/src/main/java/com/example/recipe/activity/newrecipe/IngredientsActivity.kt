@@ -10,6 +10,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
@@ -23,7 +24,7 @@ import com.example.recipe.R
 import com.example.recipe.activity.home.MainActivity
 import com.example.recipe.adapter.IngredientUnitAdapter
 import com.example.recipe.enum.IngredientQuantityUnit
-import com.example.recipe.models.Ingredient
+import com.example.recipe.model.Ingredient
 import com.example.recipe.util.SharedPreferencesHelper
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import java.util.*
@@ -60,7 +61,7 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
         itemsArrayList = arrayListOf()
 
         //Set the spinner
-        setupUnitSpinner()
+        //setupUnitSpinner()
 
         // İptal işlemi için onaylama dialogu gösteren fonksiyon çağrılıyor.
         btnCancelRecipe.setOnClickListener {
@@ -83,9 +84,17 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
         val inflater = LayoutInflater.from(this)
         val view = inflater.inflate(R.layout.ingredient_item, null)
         unitSpinner = view.findViewById(R.id.spUnit)
-        ingredientUnitAdapter = IngredientUnitAdapter(this, android.R.layout.simple_spinner_item, IngredientQuantityUnit.values())
-        ingredientUnitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        unitSpinner.adapter = ingredientUnitAdapter
+
+        // Create a custom adapter for the spinner
+        val unitAdapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            IngredientQuantityUnit.values().map { getString(it.resourceId) }
+        )
+
+        unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        unitSpinner.adapter = unitAdapter
+
         unitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?, position: Int, id: Long) {
                 val selectedUnit = IngredientQuantityUnit.values()[position]
@@ -97,6 +106,7 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
             }
         }
     }
+
 
     private fun showUnitDialog(selectedUnit: IngredientQuantityUnit) {
         val dialogBuilder = AlertDialog.Builder(this)
@@ -173,17 +183,7 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
 
     // Yeni bir malzeme satırı ekleyen fonksiyon
     private fun addIngredientRow() {
-        // Inflate ingredient_item.xml layout
-        val inflater = LayoutInflater.from(this)
-        val view = inflater.inflate(R.layout.ingredient_item, null)
-
-        // Set up the spinner
-        val unitSpinner = view.findViewById<Spinner>(R.id.spUnit)
-        ingredientUnitAdapter = IngredientUnitAdapter(this, android.R.layout.simple_spinner_item, IngredientQuantityUnit.values())
-        ingredientUnitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        unitSpinner.adapter = ingredientUnitAdapter
-
-        // Add the inflated view to the RecyclerView
+        // Add the new item to the adapter's dataset
         val newItem = Ingredient("")
         itemsArrayList.add(newItem)
         ingredientTextList.add("") // Add an empty string for the new ingredient
@@ -200,9 +200,6 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
             // Scroll to the newly added item
             recyclerView.scrollToPosition(itemsArrayList.size - 1)
         }
-
-        // Add the inflated view to the RecyclerView
-        recyclerView.addView(view) // Add this line
     }
 
 

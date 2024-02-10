@@ -25,7 +25,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.model.Category
@@ -40,14 +39,10 @@ import java.io.IOException
 
 class NewCategoryActivity : AppCompatActivity() {
 
-    private lateinit var categoryBox: View
-    private lateinit var cardViewButton: CardView
-    private lateinit var etRecipeName: EditText
     private lateinit var dialogViewCategoryPhoto: ImageView
     private lateinit var categoryNameTextView: TextView
     private lateinit var categoryRecyclerView: RecyclerView
     private lateinit var categoryAdapter: CategoryAdapter
-    private lateinit var btnNewCategory: Button
     private lateinit var btnAddCategory: Button
     private lateinit var categoryList: MutableList<Category>
     private lateinit var etCategoryDescription: TextView
@@ -69,7 +64,7 @@ class NewCategoryActivity : AppCompatActivity() {
         // UI elemanlarını tanımla
         btnAddCategory = findViewById(R.id.btnAddCategory)
         categoryRecyclerView = findViewById(R.id.categoryRecyclerView)
-        categoryList = mutableListOf<Category>()
+        categoryList = mutableListOf()
         btnCancelRecipe = findViewById(R.id.btnCancelRecipe)
         btnCancelRecipe.setOnClickListener {
             // İptal butonuna tıklanıldığında onaylama dialogunu göster

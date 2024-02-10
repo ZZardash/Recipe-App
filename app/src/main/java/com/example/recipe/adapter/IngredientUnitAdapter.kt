@@ -8,11 +8,12 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.example.recipe.enum.IngredientQuantityUnit
+import com.example.recipe.enum.getLabel
 
 class IngredientUnitAdapter(
     context: Context,
     resource: Int,
-    private val units: Array<IngredientQuantityUnit>
+    private val units: List<IngredientQuantityUnit>
 ) : ArrayAdapter<IngredientQuantityUnit>(context, resource, units) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -24,12 +25,9 @@ class IngredientUnitAdapter(
     }
 
     private fun createView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view = convertView ?: LayoutInflater.from(context)
-            .inflate(android.R.layout.simple_spinner_item, parent, false)
-
-        val textView: TextView = view.findViewById(android.R.id.text1)
-        textView.text = context.getString(units[position].resourceId)
-
+        val view = convertView ?: LayoutInflater.from(context).inflate(android.R.layout.simple_spinner_dropdown_item, parent, false)
+        val textView = view.findViewById<TextView>(android.R.id.text1)
+        textView.text = units[position].getLabel(context)
         return view
     }
 }

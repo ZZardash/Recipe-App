@@ -1,5 +1,6 @@
 package com.example.recipe.enum
 
+import android.content.Context
 import com.example.recipe.R
 
 enum class IngredientQuantityUnit(val resourceId: Int) {
@@ -17,4 +18,27 @@ enum class IngredientQuantityUnit(val resourceId: Int) {
     GALLON(R.string.ingredient_quantity_unit_gallon),
     QUART(R.string.ingredient_quantity_unit_quart),
     PINT(R.string.ingredient_quantity_unit_pint);
+}
+
+fun getAllIngredientQuantityUnits(): List<IngredientQuantityUnit> {
+    return listOf(
+        IngredientQuantityUnit.GRAM,
+        IngredientQuantityUnit.KILOGRAM,
+        IngredientQuantityUnit.LITER,
+        IngredientQuantityUnit.TEASPOON,
+        IngredientQuantityUnit.TABLESPOON,
+        IngredientQuantityUnit.CUP,
+        IngredientQuantityUnit.PIECE,
+        IngredientQuantityUnit.SLICE,
+        IngredientQuantityUnit.PINCH,
+        IngredientQuantityUnit.MILLILITER,
+        IngredientQuantityUnit.POUND,
+        IngredientQuantityUnit.GALLON,
+        IngredientQuantityUnit.QUART,
+        IngredientQuantityUnit.PINT
+    )
+}
+
+fun IngredientQuantityUnit.getLabel(context:Context): String {
+    return context.getString(this.resourceId)
 }

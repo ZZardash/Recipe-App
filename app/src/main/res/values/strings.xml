@@ -18,4 +18,5 @@
     <string name="ingredient_quantity_unit_gallon">Gallon</string>
     <string name="ingredient_quantity_unit_quart">Quart</string>
     <string name="ingredient_quantity_unit_pint">Pint</string>
+    <string name="spinner">Unit\n</string>
 </resources>
