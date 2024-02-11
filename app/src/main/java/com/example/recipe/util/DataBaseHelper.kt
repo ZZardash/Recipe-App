@@ -8,7 +8,9 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import com.example.recipe.model.Category
+import com.example.recipe.model.Ingredient
 import com.example.recipe.model.Recipe
+import com.google.gson.Gson
 import java.io.File
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -118,7 +120,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun insertRecipe(
         recipeName: String,
         selectedCategory: String,
-        ingredients: String,
+        ingredients: List<Ingredient>,
         instructions: String,
         temperature: String,
         recipePhotoPath: String,
@@ -128,10 +130,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         preparationTime: String,
         tags: String,
     ): Long {
+        val gson = Gson()
+        val ingredientsJson = gson.toJson(ingredients)
+
         val values = ContentValues().apply {
             put(COLUMN_RECIPE_NAME, recipeName)
             put(COLUMN_SELECTED_CATEGORY, selectedCategory)
-            put(COLUMN_INGREDIENTS, ingredients)
+            put(COLUMN_INGREDIENTS, ingredientsJson) // Store the serialized JSON string
             put(COLUMN_INSTRUCTIONS, instructions)
             put(COLUMN_TEMPERATURE, temperature)
             put(COLUMN_RECIPE_PHOTO_PATH, recipePhotoPath)
@@ -140,7 +145,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_COOKING_TIME, cookingTime)
             put(COLUMN_PREPARATION_TIME, preparationTime)
             put(COLUMN_TAGS, tags)
-
         }
 
         val db = writableDatabase
@@ -149,6 +153,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         return id
     }
+
 
     fun deleteRecipe(recipeId: Long): Boolean {
         val db = writableDatabase
@@ -209,13 +214,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val db = readableDatabase
         val cursor: Cursor = db.rawQuery(selectQuery, arrayOf(categoryName))
 
+        val gson = Gson()
         val recipeIndexId = cursor.getColumnIndex(COLUMN_ID)
         val recipeName = cursor.getColumnIndex(COLUMN_RECIPE_NAME)
         val recipeCategoryName = cursor.getColumnIndex(COLUMN_SELECTED_CATEGORY)
         val recipeIngredients = cursor.getColumnIndex(COLUMN_INGREDIENTS)
         val recipeInstructions = cursor.getColumnIndex(COLUMN_INSTRUCTIONS)
-        val recipePhotoPath = cursor.getColumnIndex(COLUMN_RECIPE_PHOTO_PATH)
         val recipeTemperature = cursor.getColumnIndex(COLUMN_TEMPERATURE)
+        val recipePhotoPath = cursor.getColumnIndex(COLUMN_RECIPE_PHOTO_PATH)
         val recipeRate = cursor.getColumnIndex(COLUMN_RECIPE_RATE)
         val videoLink = cursor.getColumnIndex(COLUMN_VIDEO_LINK)
         val cookingTime = cursor.getColumnIndex(COLUMN_COOKING_TIME)
@@ -226,10 +232,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val id = cursor.getLong(recipeIndexId)
             val title = cursor.getString(recipeName)
             val categoryName = cursor.getString(recipeCategoryName)
-            val ingredients = cursor.getString(recipeIngredients)
+            val ingredientsJson = cursor.getString(recipeIngredients)
             val instructions = cursor.getString(recipeInstructions)
             val temperature = cursor.getString(recipeTemperature)
-
             val image = cursor.getString(recipePhotoPath)
             val bitmapImage = decodeBitmapFromFile(image)
             val recipeRate = cursor.getString(recipeRate)
@@ -237,6 +242,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             val cookingTime = cursor.getString(cookingTime)
             val preparationTime = cursor.getString(preparationTime)
             val tags = cursor.getString(tags)
+
+            val ingredients = gson.fromJson(ingredientsJson, Array<Ingredient>::class.java).toList()
 
             val recipe = Recipe(id, title, categoryName, ingredients, instructions, temperature, bitmapImage, recipeRate,videoLink, cookingTime, preparationTime,tags)
             recipeList.add(recipe)
