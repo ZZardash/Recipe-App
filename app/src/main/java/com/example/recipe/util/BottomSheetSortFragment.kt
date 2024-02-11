@@ -163,8 +163,11 @@ class BottomSheetSortFragment : BottomSheetDialogFragment() {
         val sortedRecipes = when {
             checkBoxLowRating.isChecked -> viewRecipeActivity.recipeList.sortedBy { it.rating }
             checkBoxHighRating.isChecked -> viewRecipeActivity.recipeList.sortedByDescending { it.rating }
-            checkBoxLowIngredient.isChecked -> viewRecipeActivity.recipeList.sortedBy { it.ingredients.split(",").size }
-            checkBoxHighIngredient.isChecked -> viewRecipeActivity.recipeList.sortedByDescending { it.ingredients.split(",").size }
+            checkBoxLowIngredient.isChecked -> viewRecipeActivity.recipeList.sortedBy { recipe ->
+                recipe.ingredients.size
+            }
+            checkBoxHighIngredient.isChecked -> viewRecipeActivity.recipeList.sortedByDescending { recipe ->
+                recipe.ingredients.size }
             checkBoxLowTime.isChecked -> viewRecipeActivity.recipeList.sortedBy { it.cookingTime + it.prepTime }
             checkBoxHighTime.isChecked -> viewRecipeActivity.recipeList.sortedByDescending { it.cookingTime + it.prepTime }
             else -> viewRecipeActivity.recipeList
