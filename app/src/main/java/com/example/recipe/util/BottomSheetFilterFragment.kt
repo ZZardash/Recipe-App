@@ -99,10 +99,6 @@ class BottomSheetFilterFragment() : BottomSheetDialogFragment() {
         steppedSeekBarRating = view.findViewById(R.id.steppedSeekBarRating)
         selectedTimeTextViewRating = view.findViewById(R.id.selectedTimeTextViewRating)
 
-
-
-
-
         btnAddIngredientTag.setOnClickListener {
             addTag(addTagEditText, addTagContainer, addContainer, addToAddedTags = true, addedTags, removedTags)
         }
@@ -303,8 +299,9 @@ class BottomSheetFilterFragment() : BottomSheetDialogFragment() {
     ): List<Recipe> {
         return recipes.filter { recipe ->
             // Check tags
-            val recipeTags = recipe.ingredients.split(",").map { it.trim() }
-            val hasAllAddedTags = recipeTags.containsAll(addedTags)
+            val recipeTags = recipe.ingredients.map { it.name }
+            val hasAllAddedTags = addedTags.all { tag -> recipeTags.contains(tag) }
+
             val hasNoRemovedTags = removedTags.none { removedTag -> recipeTags.contains(removedTag) }
 
             // Check if the recipe contains selected chips in its tags
