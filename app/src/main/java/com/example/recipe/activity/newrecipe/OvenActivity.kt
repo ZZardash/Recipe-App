@@ -17,9 +17,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.airbnb.lottie.LottieAnimationView
 import com.example.recipe.R
 import com.example.recipe.activity.home.MainActivity
+import com.example.recipe.model.Ingredient
 import com.example.recipe.model.Recipe
 import com.example.recipe.util.SharedPreferencesHelper
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -127,34 +129,19 @@ class OvenActivity : AppCompatActivity() {
 
         val recipeName = sharedPreferences.loadData("RecipeName")
         val categoryName = sharedPreferences.loadData("SelectedCategory")
-        val ingredients = sharedPreferences.loadData("Ingredients")
         val ins = sharedPreferences.loadData("Instructions")
         val recipePhotoPath = sharedPreferences.loadData("RecipePhotoPath")
         val bitmapPhoto = decodeBitmapFromFile(recipePhotoPath)
         val recipeRate = sharedPreferences.loadData("recipeRate")
         val videoLink = sharedPreferences.loadData("videoLink")
         val tags = sharedPreferences.loadData("selected_tags")
-        //cookingTime + preparationTime + temperature
 
-        //data class Recipe(
-        //    val id: Long,
-        //    val title: String,
-        //    val category_name: String,
-        //    val ingredients: String,
-        //    val instructions: String,
-        //    val temperature: String,
-        //    val image: Bitmap?,
-        //    val rating: String,
-        //    val videoLink: String,
-        //    val cookingTime: String,
-        //    val prepTime: String
-        //    val tags: String
-        //)
+        val ingredients = sharedPreferences.loadClassListData<Ingredient>("Ingredients")
 
         val recipeId = databaseHelper.insertRecipe(recipeName, categoryName, ingredients, ins, temperature, recipePhotoPath, recipeRate, videoLink, cookingTime, preparationTime, tags)
         val recipe = Recipe(recipeId, recipeName, categoryName, ingredients, ins, temperature, bitmapPhoto, recipeRate, videoLink, cookingTime, preparationTime, tags)
         recipeList.add(recipe)
-        println("SelectedTags: "+ sharedPreferences.loadData("selected_tags"))
+
 
     }
 

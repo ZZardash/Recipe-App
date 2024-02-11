@@ -7,10 +7,9 @@
     <!-- Sol kısımdaki normal string etIngredient -->
     <EditText
         android:id="@+id/etIngredient"
-        android:layout_width="0dp"
+        android:layout_width="125dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_weight="2"
         android:hint="Ingredient"
         android:inputType="text"
         android:maxLength="20"
@@ -19,22 +18,21 @@
     <!-- Orta kısımdaki numara etIngredient -->
     <EditText
         android:id="@+id/etQuantity"
-        android:layout_width="0dp"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_weight="1"
         android:hint="Quantity"
         android:inputType="number"
         android:maxLength="6"
         android:textSize="16sp" />
 
     <!-- Sağdaki drop-down menü -->
-
         <Spinner
             android:id="@+id/spUnit"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:prompt="@string/spinner"
-            android:spinnerMode="dropdown"/>
+            android:spinnerMode="dropdown"
+            android:layout_centerInParent="true"
+            />
 
 </LinearLayout>

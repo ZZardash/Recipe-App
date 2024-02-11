@@ -1,4 +1,8 @@
+package com.example.recipe.adapter
+
 import android.content.Context
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RoundRectShape
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -18,7 +22,8 @@ import com.example.recipe.model.Ingredient
 
 class IngredientAdapter(
     private val itemsList: List<Ingredient>,
-    private val textChangeListener: IngredientTextChangeListener
+    private val ingredientTextChangeListener: IngredientTextChangeListener,
+    private val quantityTextChangeListener: QuantityTextChangeListener
 ) : RecyclerView.Adapter<IngredientAdapter.ViewHolder>(),
     AdapterView.OnItemSelectedListener {
 
@@ -58,7 +63,7 @@ class IngredientAdapter(
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     // Notify the activity about the changed text
-                    textChangeListener.onIngredientTextChanged(position, s?.toString() ?: "")
+                    ingredientTextChangeListener.onIngredientTextChanged(position, s?.toString() ?: "")
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
@@ -75,7 +80,7 @@ class IngredientAdapter(
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    // You may want to handle quantity changes here if needed
+                    quantityTextChangeListener.onQuantityTextChanged(position, s?.toString() ?: "")
                 }
 
                 override fun afterTextChanged(s: Editable?) {}
@@ -114,10 +119,14 @@ class IngredientAdapter(
             }
         }
     }
-
+    interface QuantityTextChangeListener {
+        fun onQuantityTextChanged(position: Int, newText: String)
+    }
     interface IngredientTextChangeListener {
         fun onIngredientTextChanged(position: Int, newText: String)
     }
+
+
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         // Handle item selection if needed
@@ -126,6 +135,7 @@ class IngredientAdapter(
     override fun onNothingSelected(parent: AdapterView<*>?) {
         // Handle the case where nothing is selected in the spinner
     }
+
 }
 
 // Create a custom adapter to set maximum height for the dropdown

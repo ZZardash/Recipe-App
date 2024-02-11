@@ -33,6 +33,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.R
 import com.example.recipe.activity.home.MainActivity
 import com.example.recipe.adapter.ViewIngredientAdapter
+import com.example.recipe.model.Ingredient
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
+import com.google.gson.reflect.TypeToken
 
 class RecipePageActivity : AppCompatActivity() {
 
@@ -62,8 +66,15 @@ class RecipePageActivity : AppCompatActivity() {
         // Intent'ten verileri al ve görüntüle
         val (title, image, recipeId) = getIntentData(databaseHelper)
 
-        val ingredients = databaseHelper.getRecipeColumnData(recipeId, "ingredients")
-        val ingredientsArray: Array<String> = ingredients.toString().split(",").toTypedArray()
+        val ingredientsJson = databaseHelper.getRecipeColumnData(recipeId, "ingredients")
+        val ingredientsArray: List<Ingredient> = parseIngredientsJson(ingredientsJson)
+
+
+        // Now 'ingredientsList' contains the list of Ingredient objects for the specified recipe
+        for (ingredient in ingredientsArray) {
+            println(ingredient)
+        }
+
         ratingBar = findViewById<RatingBar>(R.id.ratingBar)
         btnHome = findViewById(R.id.btnHome)
         btnHome.setOnClickListener{
@@ -89,12 +100,14 @@ class RecipePageActivity : AppCompatActivity() {
         // "İçindekiler" ve "Hazırlık" düğmeleri için işlevsellik kur
         selectButton(ingredientsButton, true)
         showCombinedDetailsIngredients(ingredientsArray, temperature, time)
+
         ingredientsButton.setOnClickListener {
             showCombinedDetailsIngredients(ingredientsArray, temperature, time)
             setIngredientsLayer()
             selectButton(ingredientsButton, false)
             selectButton(preparationButton, true)
         }
+
         preparationButton.setOnClickListener {
             showPreparation(instructions, videoLink)
             selectButton(preparationButton, false)
@@ -103,6 +116,19 @@ class RecipePageActivity : AppCompatActivity() {
 
         // dynamicLayout için OnTouchListener ayarla
     }
+    private fun parseIngredientsJson(ingredientsJson: String?): List<Ingredient> {
+        val gson = Gson()
+        return try {
+            val ingredientListType = object : TypeToken<List<Ingredient>>() {}.type
+            val ingredientsList = gson.fromJson<List<Ingredient>>(ingredientsJson, ingredientListType)
+            ingredientsList ?: emptyList()
+        } catch (e: JsonSyntaxException) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+
 
     private fun transitionToHome() {
         val intent = Intent(this, MainActivity::class.java)
@@ -347,7 +373,7 @@ class RecipePageActivity : AppCompatActivity() {
 
 
 
-    private fun showCombinedDetailsIngredients(ingredients: Array<String>, temperature: String, selectedTime: String) {
+    private fun showCombinedDetailsIngredients(ingredients: List<Ingredient>, temperature: String, selectedTime: String) {
         // Eğer varsa mevcut çocuk görünümünü contentLayout'tan kaldır
         contentLayout.removeAllViews()
 

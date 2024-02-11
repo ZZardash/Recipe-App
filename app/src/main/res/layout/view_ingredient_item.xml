@@ -5,20 +5,14 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/ingredientEditText"
+    <!-- Combine name, quantity, and unit in a single TextView -->
+    <TextView
+        android:id="@+id/ingredientTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:fontFamily="@font/montserrat_bold"
-        android:background="@android:drawable/editbox_background" />
-
-    <!-- Add a TextView with the id "textView" -->
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/> <!-- Initially set to gone, since it seems like you want to use etIngredient -->
+        android:background="@android:color/transparent"  />
 
 </LinearLayout>

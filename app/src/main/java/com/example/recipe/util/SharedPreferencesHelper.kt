@@ -2,11 +2,33 @@ package com.example.recipe.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+@Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
 
 class SharedPreferencesHelper(private val context: Context) {
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+
+    fun getSharedPreferences(): SharedPreferences {
+        return sharedPreferences
+    }
+    // Expose the SharedPreferences publicly
+    inline fun <reified T> saveClassListData(key: String, dataList: List<T>) {
+        val editor = sharedPreferences.edit()
+        val jsonString = Gson().toJson(dataList)
+        editor.putString(key, jsonString)
+        editor.apply()
+    }
+
+    inline fun <reified T> loadClassListData(key: String): List<T> {
+        val jsonString = sharedPreferences.getString(key, null)
+        return if (jsonString != null) {
+            Gson().fromJson(jsonString, object : TypeToken<List<T>>() {}.type)
+        } else {
+            emptyList()
+        }
+    }
 
 
     fun saveStringData(key: String, value: String) {
@@ -26,9 +48,6 @@ class SharedPreferencesHelper(private val context: Context) {
     }
     fun loadIntData(key: String, defaultValue: Int = 0): Int {
         return sharedPreferences.getInt(key, defaultValue)
-    }
-    fun getSharedPreferences(): SharedPreferences {
-        return sharedPreferences
     }
 
     fun saveData(titleData: String, stringData: String) {

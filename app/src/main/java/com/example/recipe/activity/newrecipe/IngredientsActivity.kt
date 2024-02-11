@@ -1,6 +1,5 @@
 package com.example.recipe.activity.newrecipe
 
-import IngredientAdapter
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
@@ -22,14 +21,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipe.R
 import com.example.recipe.activity.home.MainActivity
+import com.example.recipe.adapter.IngredientAdapter
 import com.example.recipe.adapter.IngredientUnitAdapter
 import com.example.recipe.enum.IngredientQuantityUnit
 import com.example.recipe.model.Ingredient
 import com.example.recipe.util.SharedPreferencesHelper
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import java.util.*
 
-class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTextChangeListener {
+class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTextChangeListener, IngredientAdapter.QuantityTextChangeListener {
 
     private lateinit var sharedPreferences: SharedPreferencesHelper
     private lateinit var addIngredientButton: Button
@@ -38,10 +40,9 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
     private lateinit var recyclerView: RecyclerView
     private lateinit var ingredientAdapter: IngredientAdapter
     private lateinit var itemsArrayList: ArrayList<Ingredient>
-    private lateinit var ingredientUnitAdapter: IngredientUnitAdapter
-    private lateinit var unitSpinner: Spinner
 
     val ingredientTextList = mutableListOf<String>()
+    val quantityTextList = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,48 +81,15 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
         setupRecyclerView()
     }
 
-    private fun setupUnitSpinner() {
-        val inflater = LayoutInflater.from(this)
-        val view = inflater.inflate(R.layout.ingredient_item, null)
-        unitSpinner = view.findViewById(R.id.spUnit)
-
-        // Create a custom adapter for the spinner
-        val unitAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_item,
-            IngredientQuantityUnit.values().map { getString(it.resourceId) }
-        )
-
-        unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        unitSpinner.adapter = unitAdapter
-
-        unitSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parentView: AdapterView<*>?, selectedItemView: View?, position: Int, id: Long) {
-                val selectedUnit = IngredientQuantityUnit.values()[position]
-                showUnitDialog(selectedUnit) // You can customize this method based on how you want to display the selected unit
-            }
-
-            override fun onNothingSelected(parentView: AdapterView<*>?) {
-                // Do nothing here or provide default behavior
-            }
-        }
-    }
-
-
-    private fun showUnitDialog(selectedUnit: IngredientQuantityUnit) {
-        val dialogBuilder = AlertDialog.Builder(this)
-        dialogBuilder.setTitle("Selected Unit")
-        dialogBuilder.setMessage(selectedUnit.name) // You can customize this to show any information you want
-        dialogBuilder.setPositiveButton("OK") { dialog, _ ->
-            dialog.dismiss()
-        }
-        val alertDialog = dialogBuilder.create()
-        alertDialog.show()
-    }
     private fun checkLastIngredientAndDisableButton() {
         // Enable the button if the last ingredient is not empty, otherwise disable it
-        addIngredientButton.isEnabled = !ingredientTextList.lastOrNull().isNullOrBlank()
+        val lastIngredient = ingredientTextList.lastOrNull() ?: ""
+        val lastQuantity = quantityTextList.lastOrNull() ?: ""
+
+        // Enable the button if the last ingredient and quantity are not empty, otherwise disable it
+        addIngredientButton.isEnabled = !lastIngredient.isBlank() && !lastQuantity.isBlank()
     }
+
     // İptal onaylama dialogunu gösteren fonksiyon
     private fun showCancelConfirmationDialog() {
         val alertDialogBuilder = AlertDialog.Builder(this)
@@ -146,13 +114,15 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
         alertDialog.show()
     }
 
+
     // Tarif sayfasına geçiş yapacak butona tıklanınca çalışacak fonksiyon
     private fun slideToInstructionsPage() {
         btnToInstructions.setOnClickListener {
             // Tüm değerleri topla ve SharedPreferences'e kaydet
             val ingredientText = collectEditTextValues()
-            sharedPreferences.saveData("Ingredients", ingredientText)
+            sharedPreferences.saveClassListData("Ingredients", ingredientText)
 
+            println("Ingredients: "+ingredientText)
             // Diğer işlemleri gerçekleştir
             val intent = Intent(this, InstructionsActivity::class.java)
             startActivity(intent)
@@ -163,23 +133,29 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
     }
 
     // EditText değerlerini toplayan ve birleştiren fonksiyon
-    private fun collectEditTextValues(): String {
-        ingredientTextList.clear()
+    private fun collectEditTextValues(): List<Ingredient> {
+        val ingredientList = mutableListOf<Ingredient>()
         for (i in 0 until ingredientAdapter.itemCount) {
             val itemView = recyclerView.findViewHolderForAdapterPosition(i)?.itemView
-            val ingredientEditText = itemView?.findViewById<EditText>(R.id.ingredientEditText)
+            val ingredientEditText = itemView?.findViewById<EditText>(R.id.etIngredient)
+            val quantityEditText = itemView?.findViewById<EditText>(R.id.etQuantity)
+            val unitSpinner = itemView?.findViewById<Spinner>(R.id.spUnit)
 
             val itemName = ingredientEditText?.text?.toString()?.trim()
+            val quantity = quantityEditText?.text?.toString()?.trim() ?: ""
+            val unit = unitSpinner?.selectedItem?.toString() ?: ""
+
             if (itemName != null && itemName.isNotBlank() && itemName != "") {
-                ingredientTextList.add(itemName)
+                ingredientList.add(Ingredient(itemName, quantity, unit))
             } else {
-                // Hata ayıklama için boş veya 'New Ingredient' değerini atla
+                // Handle empty or 'New Ingredient' value
                 Log.d("IngredientDebug", "Skipping empty or 'New Ingredient' value: $itemName")
             }
         }
         checkLastIngredientAndDisableButton()
-        return ingredientTextList.joinToString(", ")
+        return ingredientList
     }
+
 
     // Yeni bir malzeme satırı ekleyen fonksiyon
     private fun addIngredientRow() {
@@ -187,6 +163,7 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
         val newItem = Ingredient("")
         itemsArrayList.add(newItem)
         ingredientTextList.add("") // Add an empty string for the new ingredient
+        quantityTextList.add("")
         ingredientAdapter.notifyItemInserted(itemsArrayList.size - 1)
 
         // Check if the last ingredient is empty and disable the button if true
@@ -202,12 +179,9 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
         }
     }
 
-
-
-
     // RecyclerView'i ayarlayan fonksiyon
     private fun setupRecyclerView() {
-        ingredientAdapter = IngredientAdapter(itemsArrayList, this)
+        ingredientAdapter = IngredientAdapter(itemsArrayList, this,this)
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = ingredientAdapter
 
@@ -241,6 +215,7 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
                 // Remove the item from both lists
                 itemsArrayList.removeAt(position)
                 ingredientTextList.removeAt(position)
+                quantityTextList.removeAt(position)
 
                 ingredientAdapter.notifyItemRemoved(position)
 
@@ -311,5 +286,21 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
 
         checkLastIngredientAndDisableButton()
     }
+
+    override fun onQuantityTextChanged(position: Int, newText: String) {
+        if (position < quantityTextList.size) {
+            // If the position is within the bounds of the current list, update the element
+            quantityTextList[position] = newText
+        } else if (position == quantityTextList.size) {
+            // If the position is equal to the current size, add a new element to the list
+            quantityTextList.add(newText)
+        } else {
+            // Handle the case where position is greater than the current size (should not happen)
+            Log.e("QuantityDebug", "Invalid position: $position")
+        }
+
+        checkLastIngredientAndDisableButton()
+    }
+
 
 }
