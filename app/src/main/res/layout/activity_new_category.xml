@@ -41,7 +41,7 @@
         android:layout_above="@id/btnAddCategory"
         android:layout_below="@id/textView"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="19dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

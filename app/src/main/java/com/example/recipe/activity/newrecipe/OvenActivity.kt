@@ -125,7 +125,6 @@ class OvenActivity : AppCompatActivity() {
         val preparationHour = preparationTimePicker.hour.toString()
         val preparationMinute = preparationTimePicker.minute.toString()
         val preparationTime = "$preparationHour:$preparationMinute"
-        println("PreparationTime: "+ preparationTime)
 
         val recipeName = sharedPreferences.loadData("RecipeName")
         val categoryName = sharedPreferences.loadData("SelectedCategory")
@@ -138,6 +137,7 @@ class OvenActivity : AppCompatActivity() {
 
         val ingredients = sharedPreferences.loadClassListData<Ingredient>("Ingredients")
 
+        println("Recipe Rate: "+ recipeRate)
         val recipeId = databaseHelper.insertRecipe(recipeName, categoryName, ingredients, ins, temperature, recipePhotoPath, recipeRate, videoLink, cookingTime, preparationTime, tags)
         val recipe = Recipe(recipeId, recipeName, categoryName, ingredients, ins, temperature, bitmapPhoto, recipeRate, videoLink, cookingTime, preparationTime, tags)
         recipeList.add(recipe)

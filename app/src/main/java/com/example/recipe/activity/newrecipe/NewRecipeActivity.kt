@@ -78,7 +78,6 @@ class NewRecipeActivity : AppCompatActivity() {
 
         newCategoryButtonClick(btnNewCategory)
         setupRatingBar()
-
         addRecipePhoto.setOnClickListener {
             launchPhotoPicker()
         }
@@ -93,6 +92,10 @@ class NewRecipeActivity : AppCompatActivity() {
     }
 
     private fun setupRatingBar() {
+        val defaultRating = 0.0
+        sharedPreferences.saveData("recipeRate", defaultRating.toString())
+        println(defaultRating)
+        Toast.makeText(this, "Rating: $defaultRating", Toast.LENGTH_SHORT).show()
         ratingBar.setOnRatingBarChangeListener { _, rating, _ ->
             sharedPreferences.saveData("recipeRate", rating.toString())
             println(rating)
@@ -138,6 +141,9 @@ class NewRecipeActivity : AppCompatActivity() {
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }
+
+
+
         }
     }
 

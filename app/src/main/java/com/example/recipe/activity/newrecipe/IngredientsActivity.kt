@@ -79,6 +79,9 @@ class IngredientsActivity : AppCompatActivity(), IngredientAdapter.IngredientTex
 
         // RecyclerView için gerekli ayarlamalar yapılıyor.
         setupRecyclerView()
+
+        //Initial recipe value
+        addIngredientRow()
     }
 
     private fun checkLastIngredientAndDisableButton() {
